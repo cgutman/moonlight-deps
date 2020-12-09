@@ -8,11 +8,15 @@ environment:
       CMAKE_ARGS: -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
 
 before_build:
-  - 'git submodule update --init --recursive'
+  - 'git submodule update --init'
 
 build_script:
   - 'mkdir build'
   - 'cd build'
+  - 'mkdir openssl'
+  - cmd: 'cmd /c ..\build-openssl.bat x86 amd64_x86 VC-WIN32'
+  - cmd: 'cmd /c ..\build-openssl.bat x64 amd64 VC-WIN64A'
+  - cmd: 'cmd /c ..\build-openssl.bat arm64 amd64_arm64 VC-WIN64-ARM'
   - 'mkdir FFmpeg'
   - cmd: 'cmd /c ..\build-ffmpeg-windows.bat x86 amd64_x86'
   - cmd: 'cmd /c ..\build-ffmpeg-windows.bat x64 amd64'
