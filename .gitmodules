@@ -1,0 +1,6 @@
+[submodule "discord-rpc"]
+	path = discord-rpc
+	url = https://github.com/cgutman/discord-rpc.git
+[submodule "opus"]
+	path = opus
+	url = https://gitlab.xiph.org/xiph/opus.git

@@ -1,0 +1,22 @@
+clone_depth: 1
+
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.18362.0
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      CMAKE_ARGS: -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
+
+before_build:
+  - 'git submodule update --init --recursive'
+
+build_script:
+  - 'mkdir build'
+  - 'cd build'
+  - 'mkdir opus'
+  - 'mkdir discord-rpc'
+  - cmd: 'C:\msys64\msys.exe ..\..\build-ffmpeg-windows.sh'
+  - cmd: '..\..\build-opus.bat'
+  - cmd: '..\..\build-discord-rpc.bat'
+
+deploy: off
