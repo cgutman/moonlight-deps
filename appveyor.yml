@@ -2,7 +2,7 @@ clone_depth: 1
 
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.18362.0
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       CMAKE_ARGS: -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
@@ -13,10 +13,22 @@ before_build:
 build_script:
   - 'mkdir build'
   - 'cd build'
+  - 'mkdir FFmpeg'
+  - cmd: 'cmd /c ..\build-ffmpeg-windows.bat x86 amd64_x86'
+  - cmd: 'cmd /c ..\build-ffmpeg-windows.bat x64 amd64'
+  - cmd: 'cmd /c ..\build-ffmpeg-windows.bat arm64 amd64_arm64'
   - 'mkdir opus'
-  - 'mkdir discord-rpc'
-  - cmd: 'C:\msys64\msys.exe ..\..\build-ffmpeg-windows.sh'
+  - 'cd opus'
   - cmd: '..\..\build-opus.bat'
+  - 'cd ..'
+  - 'mkdir discord-rpc'
+  - 'cd discord-rpc'
   - cmd: '..\..\build-discord-rpc.bat'
+  - 'cd ..'
+  - 'cd ..'
+  - cmd: archive.bat
+
+after_build:
+  - cmd: appveyor PushArtifact windows.zip
 
 deploy: off
