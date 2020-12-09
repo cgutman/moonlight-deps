@@ -6,7 +6,7 @@ mkdir output\include\openssl
 copy openssl\include\openssl\*.h output\include\openssl
 copy opus\include\*.h output\include
 copy discord-rpc\include\*.h output\include
-xcopy /e /y build\FFmpeg\build_x64\include\ output\include
+xcopy /e /y build\FFmpeg\build_x64\include output\include
 
 for %%i in (x86 x64 arm64) do (
     mkdir output\lib\%%i
