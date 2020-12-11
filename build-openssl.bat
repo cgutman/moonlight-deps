@@ -6,15 +6,10 @@ cd ..\openssl
 
 rem Build OpenSSL
 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" %2
-perl Configure %3
-nmake
-
-rem Copy DLLs, LIBs, and PDBs
 mkdir ..\build\openssl\build_%1
-copy libcrypto.lib ..\build\openssl\build_%1
-copy libssl.lib ..\build\openssl\build_%1
-copy lib*.dll ..\build\openssl\build_%1
-copy lib*.pdb ..\build\openssl\build_%1
+perl Configure --prefix=%CD%\..\build\openssl\build_%1 --openssldir=%CD%\..\build\openssl\build_%1 %3
+nmake
+nmake install
 
 rem Clean up in-tree build
 git reset --hard
