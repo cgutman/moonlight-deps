@@ -5,10 +5,10 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.18362.0
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      CMAKE_ARGS: -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
 
 before_build:
   - 'git submodule update --init'
+  - sh: 'brew install nasm'
 
 build_script:
   - 'mkdir build'
@@ -17,22 +17,32 @@ build_script:
   - cmd: 'cmd /c ..\build-openssl.bat x86 amd64_x86 VC-WIN32'
   - cmd: 'cmd /c ..\build-openssl.bat x64 amd64 VC-WIN64A'
   - cmd: 'cmd /c ..\build-openssl.bat arm64 amd64_arm64 VC-WIN64-ARM'
+  - sh: '../build-openssl.sh x64 darwin64-x86_64-cc'
+  - sh: '../build-openssl.sh arm64 darwin64-arm64-cc'
   - 'mkdir FFmpeg'
   - cmd: 'cmd /c ..\build-ffmpeg-windows.bat x86 amd64_x86'
   - cmd: 'cmd /c ..\build-ffmpeg-windows.bat x64 amd64'
   - cmd: 'cmd /c ..\build-ffmpeg-windows.bat arm64 amd64_arm64'
+  - sh: '../build-ffmpeg-macos.sh x64 x86_64'
+  - sh: '../build-ffmpeg-macos.sh arm64 arm64'
   - 'mkdir opus'
   - 'cd opus'
   - cmd: '..\..\build-opus.bat'
+  - sh: '../../build-opus.sh x64 x86_64'
+  - sh: '../../build-opus.sh arm64 arm64'
   - 'cd ..'
   - 'mkdir discord-rpc'
   - 'cd discord-rpc'
   - cmd: '..\..\build-discord-rpc.bat'
+  - sh: '../../build-discord-rpc.sh x64 x86_64'
+  - sh: '../../build-discord-rpc.sh arm64 arm64'
   - 'cd ..'
   - 'cd ..'
   - cmd: archive.bat
+  - sh: ./archive.sh
 
 after_build:
   - cmd: appveyor PushArtifact windows.zip
+  - sh: appveyor PushArtifact macos.zip
 
 deploy: off
