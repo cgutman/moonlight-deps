@@ -38,6 +38,10 @@ build_script:
   - sh: '../../build-discord-rpc.sh x64 x86_64'
   - sh: '../../build-discord-rpc.sh arm64 arm64'
   - 'cd ..'
+  - 'mkdir SDL'
+  - 'cd SDL'
+  - cmd: '..\..\build-sdl.bat'
+  - 'cd ..'
   - 'cd ..'
   - cmd: archive.bat
   - sh: ./archive.sh
