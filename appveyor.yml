@@ -8,6 +8,7 @@ environment:
 
 before_build:
   - 'git submodule update --init'
+  - sh: 'export SDKROOT=`xcrun --sdk macosx --show-sdk-path`'
   - sh: 'brew install nasm'
 
 build_script:
