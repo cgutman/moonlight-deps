@@ -4,6 +4,7 @@ set -e
 mkdir output
 mkdir output/include
 mkdir output/lib
+mkdir output/Frameworks
 
 cp opus/include/*.h output/include
 cp discord-rpc/include/*.h output/include
@@ -16,6 +17,11 @@ lipo build/openssl/build_*/lib/libssl.a -create -o output/lib/libssl.a
 lipo build/openssl/build_*/lib/libcrypto.a -create -o output/lib/libcrypto.a
 lipo build/FFmpeg/build_*/lib/libavcodec.58.dylib -create -o output/lib/libavcodec.58.dylib
 lipo build/FFmpeg/build_*/lib/libavutil.56.dylib -create -o output/lib/libavutil.56.dylib
+
+cp -R build/SDL/ output/Frameworks/
+
 lipo -info output/lib/*
+lipo -info output/Frameworks/SDL2.framework/SDL2
+lipo -info output/Frameworks/hidapi.framework/hidapi
 
 7z a macos.zip ./output/*

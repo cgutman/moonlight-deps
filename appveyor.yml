@@ -41,6 +41,7 @@ build_script:
   - 'mkdir SDL'
   - 'cd SDL'
   - cmd: '..\..\build-sdl.bat'
+  - sh: '../../build-sdl.sh'
   - 'cd ..'
   - 'cd ..'
   - cmd: archive.bat
