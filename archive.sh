@@ -22,6 +22,5 @@ cp -R build/SDL/ output/Frameworks/
 
 lipo -info output/lib/*
 lipo -info output/Frameworks/SDL2.framework/SDL2
-lipo -info output/Frameworks/hidapi.framework/hidapi
 
 7z a macos.zip ./output/*
