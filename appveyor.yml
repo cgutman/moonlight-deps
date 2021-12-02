@@ -4,7 +4,7 @@ environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
       CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.22000.0
-    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS-BigSur
 
 before_build:
   - 'git submodule update --init'
