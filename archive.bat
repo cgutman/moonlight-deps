@@ -2,15 +2,17 @@ mkdir output
 mkdir output\include
 mkdir output\lib
 
-copy SDL\include\*.h output\include
-copy /y build\SDL\build_x64\include\* output\include
 copy opus\include\*.h output\include
 copy discord-rpc\include\*.h output\include
-xcopy /e /y build\openssl\build_x64\include output\include
-xcopy /e /y build\FFmpeg\build_x64\include output\include
 
 for %%i in (x86 x64 arm64) do (
+    mkdir output\include\%%i
     mkdir output\lib\%%i
+
+    copy SDL\include\*.h output\include\%%i
+    copy /y build\SDL\build_%%i\include\* output\include\%%i
+    xcopy /e build\openssl\build_%%i\include output\include\%%i
+    xcopy /e build\FFmpeg\build_%%i\include output\include\%%i
 
     copy build\opus\build_%%i\Release\* output\lib\%%i
     copy build\discord-rpc\build_%%i\src\Release\* output\lib\%%i
