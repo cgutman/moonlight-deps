@@ -5,7 +5,7 @@ set PATH=C:\Strawberry\perl\bin;%ProgramFiles%\NASM;%PATH%
 cd ..\openssl
 
 rem Build OpenSSL
-call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" %2
+call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %2
 mkdir ..\build\openssl\build_%1
 perl Configure --prefix=%CD%\..\build\openssl\build_%1 --openssldir=%CD%\..\build\openssl\build_%1 %3 no-tests
 nmake
