@@ -12,6 +12,7 @@ before_build:
   - sh: 'brew install nasm'
 
 build_script:
+  -  cmd: build-detours.bat
   - 'mkdir build'
   - 'cd build'
   - 'mkdir openssl'
