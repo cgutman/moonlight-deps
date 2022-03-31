@@ -12,9 +12,19 @@ before_build:
   - sh: 'brew install nasm'
 
 build_script:
-  -  cmd: build-detours.bat
+  - cmd: build-detours.bat
+  - cmd: build-freetype.bat
   - 'mkdir build'
   - 'cd build'
+  - 'mkdir SDL'
+  - 'cd SDL'
+  - cmd: '..\..\build-sdl.bat'
+  - sh: '../../build-sdl.sh'
+  - 'cd ..'
+  - 'mkdir SDL_ttf'
+  - 'cd SDL_ttf'
+  - cmd: '..\..\build-sdl-ttf.bat'
+  - 'cd ..'
   - 'mkdir openssl'
   - cmd: 'cmd /c ..\build-openssl.bat x86 amd64_x86 VC-WIN32'
   - cmd: 'cmd /c ..\build-openssl.bat x64 amd64 VC-WIN64A'
@@ -38,11 +48,6 @@ build_script:
   - cmd: '..\..\build-discord-rpc.bat'
   - sh: '../../build-discord-rpc.sh x64 x86_64'
   - sh: '../../build-discord-rpc.sh arm64 arm64'
-  - 'cd ..'
-  - 'mkdir SDL'
-  - 'cd SDL'
-  - cmd: '..\..\build-sdl.bat'
-  - sh: '../../build-sdl.sh'
   - 'cd ..'
   - 'cd ..'
   - cmd: archive.bat

@@ -16,3 +16,9 @@
 [submodule "Detours"]
 	path = Detours
 	url = https://github.com/microsoft/Detours.git
+[submodule "SDL_ttf"]
+	path = SDL_ttf
+	url = https://github.com/libsdl-org/SDL_ttf.git
+[submodule "freetype"]
+	path = freetype
+	url = https://github.com/freetype/freetype.git
