@@ -3,7 +3,6 @@ set REPO_PATH=..\..\..\SDL_ttf
 rem Set linker flags to produce PDB with Release build type
 rem This is preferable to RelWithDebInfo. See https://gitlab.kitware.com/cmake/cmake/-/issues/20812
 set LDFLAGS=/DEBUG
-set CFLAGS=/DDLL_EXPORT
 set OLD_LIB=%LIB%
 set FREETYPE_DIR=%CD%\..\..\freetype
 
