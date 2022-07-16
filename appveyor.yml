@@ -13,7 +13,6 @@ before_build:
 
 build_script:
   - cmd: build-detours.bat
-  - cmd: build-freetype.bat
   - 'mkdir build'
   - 'cd build'
   - 'mkdir SDL'

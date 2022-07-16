@@ -25,12 +25,6 @@ for %%i in (x86 x64 arm64) do (
     copy build\openssl\build_%%i\bin\lib*.dll output\lib\%%i
     copy build\openssl\build_%%i\bin\lib*.pdb output\lib\%%i
     copy Detours\lib.%%i\detours.* output\lib\%%i
-
-    if /I "%%i" EQU "x86" (
-        copy freetype\objs\Win32\Release\freetype.dll output\lib\%%i
-    ) else (
-        copy freetype\objs\%%i\Release\freetype.dll output\lib\%%i
-    )
 )
 
 7z a windows.zip .\output\*
