@@ -11,8 +11,7 @@ for %%i in (x86 x64 arm64) do (
     mkdir output\include\%%i
     mkdir output\lib\%%i
 
-    copy SDL\include\*.h output\include\%%i
-    copy /y build\SDL\build_%%i\include\* output\include\%%i
+    copy build\SDL\install_%%i\include\SDL2\* output\include\%%i
     xcopy /e build\openssl\build_%%i\include output\include\%%i
     xcopy /e build\FFmpeg\build_%%i\include output\include\%%i
 
