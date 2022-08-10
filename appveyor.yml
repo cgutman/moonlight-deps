@@ -12,17 +12,17 @@ before_build:
   - sh: 'brew install nasm'
 
 build_script:
-  - cmd: build-detours.bat
+  - cmd: 'cmd /c build-detours.bat'
   - 'mkdir build'
   - 'cd build'
   - 'mkdir SDL'
   - 'cd SDL'
-  - cmd: '..\..\build-sdl.bat'
+  - cmd: 'cmd /c ..\..\build-sdl.bat'
   - sh: '../../build-sdl.sh'
   - 'cd ..'
   - 'mkdir SDL_ttf'
   - 'cd SDL_ttf'
-  - cmd: '..\..\build-sdl-ttf.bat'
+  - cmd: 'cmd /c ..\..\build-sdl-ttf.bat'
   - 'cd ..'
   - 'mkdir openssl'
   - cmd: 'cmd /c ..\build-openssl.bat x86 amd64_x86 VC-WIN32'
@@ -38,18 +38,18 @@ build_script:
   - sh: '../build-ffmpeg-macos.sh arm64 arm64'
   - 'mkdir opus'
   - 'cd opus'
-  - cmd: '..\..\build-opus.bat'
+  - cmd: 'cmd /c ..\..\build-opus.bat'
   - sh: '../../build-opus.sh x64 x86_64'
   - sh: '../../build-opus.sh arm64 arm64'
   - 'cd ..'
   - 'mkdir discord-rpc'
   - 'cd discord-rpc'
-  - cmd: '..\..\build-discord-rpc.bat'
+  - cmd: 'cmd /c ..\..\build-discord-rpc.bat'
   - sh: '../../build-discord-rpc.sh x64 x86_64'
   - sh: '../../build-discord-rpc.sh arm64 arm64'
   - 'cd ..'
   - 'cd ..'
-  - cmd: archive.bat
+  - cmd: 'cmd /c archive.bat'
   - sh: ./archive.sh
 
 after_build:
