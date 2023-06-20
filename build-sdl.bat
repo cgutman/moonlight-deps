@@ -5,9 +5,6 @@ rem This is preferable to RelWithDebInfo. See https://gitlab.kitware.com/cmake/c
 set CFLAGS=/O2 /DNDEBUG /Zi /Gy
 set LDFLAGS=/DEBUG:FULL /OPT:REF /OPT:ICF
 
-rem HACK: Avoid enabling WGI due to https://github.com/libsdl-org/SDL/issues/6150
-set CFLAGS=%CFLAGS% /DWINDOWS_FOUNDATION_UNIVERSALAPICONTRACT_VERSION=0
-
 mkdir build_x86
 cd build_x86
 cmake %CMAKE_ARGS% -DBUILD_SHARED_LIBS=ON -DSDL_LIBC=ON -A Win32 %REPO_PATH%
