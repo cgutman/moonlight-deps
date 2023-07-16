@@ -19,6 +19,8 @@ for %%i in (x86 x64 arm64) do (
     copy build\discord-rpc\build_%%i\src\Release\* output\lib\%%i
     copy build\SDL\build_%%i\Release\* output\lib\%%i
     copy build\SDL_ttf\build_%%i\Release\* output\lib\%%i
+    copy build\dav1d\install_%%i\bin\* output\lib\%%i
+    copy build\dav1d\install_%%i\lib\*.lib output\lib\%%i
     copy build\FFmpeg\build_%%i\bin\* output\lib\%%i
     copy build\openssl\build_%%i\lib\*.lib output\lib\%%i
     copy build\openssl\build_%%i\bin\lib*.dll output\lib\%%i

@@ -1,4 +1,4 @@
-GENERIC_BUILD_ARGS="--enable-pic --enable-shared --disable-static --disable-all --enable-avcodec --enable-decoder=h264 --enable-decoder=hevc --enable-decoder=av1 --enable-hwaccel=h264_dxva2 --enable-hwaccel=hevc_dxva2 --enable-hwaccel=av1_dxva2 --enable-hwaccel=h264_d3d11va --enable-hwaccel=hevc_d3d11va --enable-hwaccel=av1_d3d11va --enable-hwaccel=h264_d3d11va2 --enable-hwaccel=hevc_d3d11va2 --enable-hwaccel=av1_d3d11va2"
+GENERIC_BUILD_ARGS="--enable-pic --enable-shared --disable-static --disable-all --enable-avcodec --enable-decoder=h264 --enable-decoder=hevc --enable-decoder=av1 --enable-hwaccel=h264_dxva2 --enable-hwaccel=hevc_dxva2 --enable-hwaccel=av1_dxva2 --enable-hwaccel=h264_d3d11va --enable-hwaccel=hevc_d3d11va --enable-hwaccel=av1_d3d11va --enable-hwaccel=h264_d3d11va2 --enable-hwaccel=hevc_d3d11va2 --enable-hwaccel=av1_d3d11va2 --enable-libdav1d --enable-decoder=libdav1d"
 
 # Our MSYS command drops us in a random folder. Reorient ourselves based on this script directory.
 SCRIPT=$(readlink -f $0)
@@ -26,7 +26,7 @@ elif [ "$1" = "arm64" ]; then
 fi
 
 mkdir $OUTDIR
-./configure --prefix=$OUTDIR $TARGET_BUILD_ARGS $GENERIC_BUILD_ARGS
+PKG_CONFIG_PATH="$OUTDIR/../../dav1d/install_$1/lib/pkgconfig" ./configure --prefix=$OUTDIR $TARGET_BUILD_ARGS $GENERIC_BUILD_ARGS
 make -j$(nproc)
 make install
 
