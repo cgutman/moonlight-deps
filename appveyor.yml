@@ -26,7 +26,7 @@ before_build:
   - 'git submodule update --init'
   - sh: 'export SDKROOT=`xcrun --sdk macosx --show-sdk-path`'
   - cmd: 'choco install nasm -y'
-  - sh: 'brew install nasm'
+  - sh: 'brew install nasm meson'
 
 build_script:
   - cmd: 'cmd /c build-detours.bat %MSBUILD_PLATFORM%'
@@ -48,6 +48,7 @@ build_script:
   - 'mkdir dav1d'
   - 'cd dav1d'
   - cmd: 'cmd /c ..\..\build-dav1d.bat %FFMPEG_BUILD_TUPLE%'
+  - sh: '../../build-dav1d.sh'
   - 'cd ..'
   - 'mkdir FFmpeg'
   - cmd: 'cmd /c ..\build-ffmpeg-windows.bat %FFMPEG_BUILD_TUPLE%'

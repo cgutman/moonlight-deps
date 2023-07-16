@@ -26,5 +26,4 @@ call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" %2
 meson setup %REPO_PATH% --prefix=%CD%\..\install_%1 %COMMON_OPTIONS%
 meson compile
 meson install
-endlocal
 cd ..
