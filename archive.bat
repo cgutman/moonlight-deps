@@ -7,25 +7,23 @@ copy discord-rpc\include\*.h output\include
 copy Detours\include\*.h output\include
 copy SDL_ttf\*.h output\include
 
-for %%i in (x86 x64 arm64) do (
-    mkdir output\include\%%i
-    mkdir output\lib\%%i
+mkdir output\include\%1
+mkdir output\lib\%1
 
-    copy build\SDL\install_%%i\include\SDL2\* output\include\%%i
-    xcopy /e build\openssl\build_%%i\include output\include\%%i
-    xcopy /e build\FFmpeg\build_%%i\include output\include\%%i
+copy build\SDL\install_%1\include\SDL2\* output\include\%1
+xcopy /e build\openssl\build_%1\include output\include\%1
+xcopy /e build\FFmpeg\build_%1\include output\include\%1
 
-    copy build\opus\build_%%i\Release\* output\lib\%%i
-    copy build\discord-rpc\build_%%i\src\Release\* output\lib\%%i
-    copy build\SDL\build_%%i\Release\* output\lib\%%i
-    copy build\SDL_ttf\build_%%i\Release\* output\lib\%%i
-    copy build\dav1d\install_%%i\bin\* output\lib\%%i
-    copy build\dav1d\install_%%i\lib\*.lib output\lib\%%i
-    copy build\FFmpeg\build_%%i\bin\* output\lib\%%i
-    copy build\openssl\build_%%i\lib\*.lib output\lib\%%i
-    copy build\openssl\build_%%i\bin\lib*.dll output\lib\%%i
-    copy build\openssl\build_%%i\bin\lib*.pdb output\lib\%%i
-    copy Detours\lib.%%i\detours.* output\lib\%%i
-)
+copy build\opus\build_%1\Release\* output\lib\%1
+copy build\discord-rpc\build_%1\src\Release\* output\lib\%1
+copy build\SDL\build_%1\Release\* output\lib\%1
+copy build\SDL_ttf\build_%1\Release\* output\lib\%1
+copy build\dav1d\install_%1\bin\* output\lib\%1
+copy build\dav1d\install_%1\lib\*.lib output\lib\%1
+copy build\FFmpeg\build_%1\bin\* output\lib\%1
+copy build\openssl\build_%1\lib\*.lib output\lib\%1
+copy build\openssl\build_%1\bin\lib*.dll output\lib\%1
+copy build\openssl\build_%1\bin\lib*.pdb output\lib\%1
+copy Detours\lib.%1\detours.* output\lib\%1
 
-7z a windows.zip .\output\*
+7z a windows-%1.zip .\output\*

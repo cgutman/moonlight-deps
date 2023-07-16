@@ -1,5 +1,4 @@
-rem Install NASM and add Strawberry Perl to PATH (Git's Perl won't work)
-choco install nasm -y
+rem Add Strawberry Perl and NASM to PATH (Git's Perl won't work)
 set PATH=C:\Strawberry\perl\bin;%ProgramFiles%\NASM;%PATH%
 
 cd ..\openssl

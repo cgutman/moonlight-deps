@@ -3,61 +3,74 @@ clone_depth: 1
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      MSBUILD_PLATFORM: x64
+      CMAKE_BUILD_TUPLE: x64 x64
+      OPENSSL_BUILD_TUPLE: x64 amd64 VC-WIN64A
+      FFMPEG_BUILD_TUPLE: x64 amd64
+      CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.22621.0
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      MSBUILD_PLATFORM: ARM64
+      CMAKE_BUILD_TUPLE: arm64 ARM64
+      OPENSSL_BUILD_TUPLE: arm64 amd64_arm64 VC-WIN64-ARM
+      FFMPEG_BUILD_TUPLE: arm64 amd64_arm64
+      CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.22621.0
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      MSBUILD_PLATFORM: x86
+      CMAKE_BUILD_TUPLE: x86 Win32
+      OPENSSL_BUILD_TUPLE: x86 amd64_x86 VC-WIN32
+      FFMPEG_BUILD_TUPLE: x86 amd64_x86
       CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.22621.0
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS-Monterey
 
 before_build:
   - 'git submodule update --init'
   - sh: 'export SDKROOT=`xcrun --sdk macosx --show-sdk-path`'
+  - cmd: 'choco install nasm -y'
   - sh: 'brew install nasm'
 
 build_script:
-  - cmd: 'cmd /c build-detours.bat'
+  - cmd: 'cmd /c build-detours.bat %MSBUILD_PLATFORM%'
   - 'mkdir build'
   - 'cd build'
   - 'mkdir SDL'
   - 'cd SDL'
-  - cmd: 'cmd /c ..\..\build-sdl.bat'
+  - cmd: 'cmd /c ..\..\build-sdl.bat %CMAKE_BUILD_TUPLE%'
   - sh: '../../build-sdl.sh'
   - 'cd ..'
   - 'mkdir SDL_ttf'
   - 'cd SDL_ttf'
-  - cmd: 'cmd /c ..\..\build-sdl-ttf.bat'
+  - cmd: 'cmd /c ..\..\build-sdl-ttf.bat %CMAKE_BUILD_TUPLE%'
   - 'cd ..'
   - 'mkdir openssl'
-  - cmd: 'cmd /c ..\build-openssl.bat x86 amd64_x86 VC-WIN32'
-  - cmd: 'cmd /c ..\build-openssl.bat x64 amd64 VC-WIN64A'
-  - cmd: 'cmd /c ..\build-openssl.bat arm64 amd64_arm64 VC-WIN64-ARM'
+  - cmd: 'cmd /c ..\build-openssl.bat %OPENSSL_BUILD_TUPLE%'
   - sh: '../build-openssl.sh x64 darwin64-x86_64-cc'
   - sh: '../build-openssl.sh arm64 darwin64-arm64-cc'
   - 'mkdir dav1d'
   - 'cd dav1d'
-  - cmd: 'cmd /c ..\..\build-dav1d.bat'
+  - cmd: 'cmd /c ..\..\build-dav1d.bat %FFMPEG_BUILD_TUPLE%'
   - 'cd ..'
   - 'mkdir FFmpeg'
-  - cmd: 'cmd /c ..\build-ffmpeg-windows.bat x86 amd64_x86'
-  - cmd: 'cmd /c ..\build-ffmpeg-windows.bat x64 amd64'
-  - cmd: 'cmd /c ..\build-ffmpeg-windows.bat arm64 amd64_arm64'
+  - cmd: 'cmd /c ..\build-ffmpeg-windows.bat %FFMPEG_BUILD_TUPLE%'
   - sh: '../build-ffmpeg-macos.sh x64 x86_64'
   - sh: '../build-ffmpeg-macos.sh arm64 arm64'
   - 'mkdir opus'
   - 'cd opus'
-  - cmd: 'cmd /c ..\..\build-opus.bat'
+  - cmd: 'cmd /c ..\..\build-opus.bat %CMAKE_BUILD_TUPLE%'
   - sh: '../../build-opus.sh x64 x86_64'
   - sh: '../../build-opus.sh arm64 arm64'
   - 'cd ..'
   - 'mkdir discord-rpc'
   - 'cd discord-rpc'
-  - cmd: 'cmd /c ..\..\build-discord-rpc.bat'
+  - cmd: 'cmd /c ..\..\build-discord-rpc.bat %CMAKE_BUILD_TUPLE%'
   - sh: '../../build-discord-rpc.sh x64 x86_64'
   - sh: '../../build-discord-rpc.sh arm64 arm64'
   - 'cd ..'
   - 'cd ..'
-  - cmd: 'cmd /c archive.bat'
+  - cmd: 'cmd /c archive.bat %MSBUILD_PLATFORM%'
   - sh: ./archive.sh
 
 after_build:
-  - cmd: appveyor PushArtifact windows.zip
+  - cmd: appveyor PushArtifact windows-%MSBUILD_PLATFORM%.zip
   - sh: appveyor PushArtifact macos.zip
 
 deploy: off
