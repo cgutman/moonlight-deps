@@ -6,14 +6,14 @@ COMMON_OPTIONS="-Ddefault_library=static -Dbuildtype=debugoptimized -Denable_too
 # Build dav1d for x64
 mkdir build_x64
 pushd build_x64
-CFLAGS="-arch x86_64" meson setup ../../../dav1d $COMMON_OPTIONS
+CFLAGS="-arch x86_64 -mmacosx-version-min=$MACOS_MIN" LDFLAGS="-arch x86_64 -mmacosx-version-min=$MACOS_MIN" meson setup ../../../dav1d $COMMON_OPTIONS
 meson compile
 popd
 
 # Build dav1d for arm64
 mkdir build_arm64
 pushd build_arm64
-CFLAGS="-arch arm64" meson setup ../../../dav1d --cross-file=../../../meson-crossfiles/apple-amd64_arm64.txt $COMMON_OPTIONS
+CFLAGS="-arch arm64 -mmacosx-version-min=$MACOS_MIN" LDFLAGS="-arch arm64 -mmacosx-version-min=$MACOS_MIN" meson setup ../../../dav1d --cross-file=../../../meson-crossfiles/apple-amd64_arm64.txt $COMMON_OPTIONS
 meson compile
 popd
 
