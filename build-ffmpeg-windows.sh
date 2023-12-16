@@ -13,9 +13,9 @@ if [ "$1" = "x86" ]; then
     TARGET_BUILD_ARGS="--arch=i686 --toolchain=msvc --enable-cross-compile"
 elif [ "$1" = "x64" ]; then
     # x64 uses yasm for assembly
-    pacman --noconfirm -S yasm
+    pacman --noconfirm -S yasm mingw-w64-x86_64-vulkan-headers
 
-    TARGET_BUILD_ARGS="--arch=x86_64 --toolchain=msvc"
+    TARGET_BUILD_ARGS="--arch=x86_64 --toolchain=msvc --enable-hwaccel=h264_vulkan --enable-hwaccel=hevc_vulkan --enable-hwaccel=av1_vulkan"
 elif [ "$1" = "arm64" ]; then
     # ARM64 uses gas-preprocessor.pl for assembly
     mkdir /tmp/gas
