@@ -22,3 +22,6 @@
 [submodule "dav1d"]
 	path = dav1d
 	url = https://code.videolan.org/videolan/dav1d.git
+[submodule "libplacebo"]
+	path = libplacebo
+	url = https://code.videolan.org/videolan/libplacebo.git

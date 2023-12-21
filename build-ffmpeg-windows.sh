@@ -1,4 +1,4 @@
-GENERIC_BUILD_ARGS="--enable-pic --enable-shared --disable-static --disable-all --enable-avcodec --enable-decoder=h264 --enable-decoder=hevc --enable-decoder=av1 --enable-hwaccel=h264_dxva2 --enable-hwaccel=hevc_dxva2 --enable-hwaccel=av1_dxva2 --enable-hwaccel=h264_d3d11va --enable-hwaccel=hevc_d3d11va --enable-hwaccel=av1_d3d11va --enable-hwaccel=h264_d3d11va2 --enable-hwaccel=hevc_d3d11va2 --enable-hwaccel=av1_d3d11va2 --enable-libdav1d --enable-decoder=libdav1d"
+GENERIC_BUILD_ARGS="--enable-pic --enable-shared --disable-static --disable-all --enable-avcodec --enable-avformat --enable-decoder=h264 --enable-decoder=hevc --enable-decoder=av1 --enable-hwaccel=h264_dxva2 --enable-hwaccel=hevc_dxva2 --enable-hwaccel=av1_dxva2 --enable-hwaccel=h264_d3d11va --enable-hwaccel=hevc_d3d11va --enable-hwaccel=av1_d3d11va --enable-hwaccel=h264_d3d11va2 --enable-hwaccel=hevc_d3d11va2 --enable-hwaccel=av1_d3d11va2 --enable-libdav1d --enable-decoder=libdav1d --extra-cflags=-I$VULKAN_SDK\Include --enable-hwaccel=h264_vulkan --enable-hwaccel=hevc_vulkan --enable-hwaccel=av1_vulkan"
 
 # Our MSYS command drops us in a random folder. Reorient ourselves based on this script directory.
 SCRIPT=$(readlink -f $0)
@@ -13,9 +13,9 @@ if [ "$1" = "x86" ]; then
     TARGET_BUILD_ARGS="--arch=i686 --toolchain=msvc --enable-cross-compile"
 elif [ "$1" = "x64" ]; then
     # x64 uses yasm for assembly
-    pacman --noconfirm -S yasm mingw-w64-x86_64-vulkan-loader mingw-w64-x86_64-vulkan-headers
+    pacman --noconfirm -S yasm
 
-    TARGET_BUILD_ARGS="--arch=x86_64 --toolchain=msvc --enable-hwaccel=h264_vulkan --enable-hwaccel=hevc_vulkan --enable-hwaccel=av1_vulkan"
+    TARGET_BUILD_ARGS="--arch=x86_64 --toolchain=msvc"
 elif [ "$1" = "arm64" ]; then
     # ARM64 uses gas-preprocessor.pl for assembly
     mkdir /tmp/gas
@@ -27,7 +27,7 @@ fi
 
 mkdir $OUTDIR
 PKG_CONFIG_PATH="$OUTDIR/../../dav1d/install_$1/lib/pkgconfig" ./configure --prefix=$OUTDIR $TARGET_BUILD_ARGS $GENERIC_BUILD_ARGS
-make -j$(nproc)
+make V=1 -j$(nproc)
 make install
 
 # Grab the PDBs too (not installed by 'make install')

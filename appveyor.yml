@@ -7,19 +7,25 @@ environment:
       CMAKE_BUILD_TUPLE: x64 x64
       OPENSSL_BUILD_TUPLE: x64 amd64 VC-WIN64A
       FFMPEG_BUILD_TUPLE: x64 amd64
+      LIBPLACEBO_BUILD_TUPLE: x64 CLANG64
       CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.22621.0
+      VULKAN_SDK: C:\Vulkan
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
       MSBUILD_PLATFORM: ARM64
       CMAKE_BUILD_TUPLE: arm64 ARM64
       OPENSSL_BUILD_TUPLE: arm64 amd64_arm64 VC-WIN64-ARM
       FFMPEG_BUILD_TUPLE: arm64 amd64_arm64
+      LIBPLACEBO_BUILD_TUPLE: arm64 CLANG64
       CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.22621.0
+      VULKAN_SDK: C:\Vulkan
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
       MSBUILD_PLATFORM: x86
       CMAKE_BUILD_TUPLE: x86 Win32
       OPENSSL_BUILD_TUPLE: x86 amd64_x86 VC-WIN32
       FFMPEG_BUILD_TUPLE: x86 amd64_x86
+      LIBPLACEBO_BUILD_TUPLE: x86 CLANG32
       CMAKE_ARGS: -DCMAKE_SYSTEM_VERSION=10.0.22621.0
+      VULKAN_SDK: C:\Vulkan
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS-Monterey
       MACOS_MIN: 10.14
 
@@ -28,6 +34,8 @@ before_build:
   - sh: 'export SDKROOT=`xcrun --sdk macosx --show-sdk-path`'
   - cmd: 'choco install nasm -y'
   - sh: 'brew install nasm meson'
+  - cmd: 'curl -O https://sdk.lunarg.com/sdk/download/latest/windows/vulkan_sdk.exe'
+  - cmd: 'vulkan_sdk.exe --root %VULKAN_SDK% --accept-licenses --default-answer --confirm-command install'
 
 build_script:
   - cmd: 'cmd /c build-detours.bat %MSBUILD_PLATFORM%'
@@ -46,6 +54,8 @@ build_script:
   - cmd: 'cmd /c ..\build-openssl.bat %OPENSSL_BUILD_TUPLE%'
   - sh: '../build-openssl.sh x64 darwin64-x86_64-cc'
   - sh: '../build-openssl.sh arm64 darwin64-arm64-cc'
+  - 'mkdir libplacebo'
+  - cmd: 'cmd /c ..\build-libplacebo-windows.bat %LIBPLACEBO_BUILD_TUPLE%'
   - 'mkdir dav1d'
   - 'cd dav1d'
   - cmd: 'cmd /c ..\..\build-dav1d.bat %FFMPEG_BUILD_TUPLE%'
