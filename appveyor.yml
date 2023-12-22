@@ -36,6 +36,10 @@ before_build:
   - sh: 'brew install nasm meson'
   - cmd: 'curl -O https://sdk.lunarg.com/sdk/download/latest/windows/vulkan_sdk.exe'
   - cmd: 'vulkan_sdk.exe --root %VULKAN_SDK% --accept-licenses --default-answer --confirm-command install'
+  - cmd: 'cd tools'
+  - cmd: 'curl -L -O https://github.com/rainers/cv2pdb/releases/download/v0.52/cv2pdb-0.52.zip'
+  - cmd: '7z x *'
+  - cmd: 'cd ..'
 
 build_script:
   - cmd: 'cmd /c build-detours.bat %MSBUILD_PLATFORM%'

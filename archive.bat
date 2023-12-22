@@ -24,6 +24,7 @@ copy build\dav1d\install_%1\lib\*.lib output\lib\%1
 copy build\FFmpeg\build_%1\bin\* output\lib\%1
 copy build\libplacebo\build_%1\bin\*.dll output\lib\%1
 copy build\libplacebo\build_%1\bin\*.lib output\lib\%1
+copy build\libplacebo\build_%1\bin\*.pdb output\lib\%1
 copy build\openssl\build_%1\lib\*.lib output\lib\%1
 copy build\openssl\build_%1\bin\lib*.dll output\lib\%1
 copy build\openssl\build_%1\bin\lib*.pdb output\lib\%1
