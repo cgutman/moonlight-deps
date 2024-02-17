@@ -4,7 +4,7 @@ set -e
 pushd ../FFmpeg
 
 # Apply our FFmpeg patch for macOS
-git apply ../patches/ffmpeg_no_ogl_vt.patch
+git apply ../patches/ffmpeg_metal_vt.patch
 
 # Build FFmpeg
 mkdir ../build/FFmpeg/build_$1

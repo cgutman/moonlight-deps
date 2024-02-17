@@ -1,16 +1,14 @@
-commit 6065e18a502a7385e857bfdbf0317538c97225c8
+commit 88d39e4ea7b682872579f55e096464bad4450a72
 Author: Cameron Gutman <aicommander@gmail.com>
-Date:   Sat Dec 26 21:27:18 2020 -0600
+Date:   Sat Feb 17 13:43:20 2024 -0600
 
-    Do not enable OpenGL texture compatibility in VT
-    
-    This causes severe decoder performance impacts on Big Sur at 4K.
+    Request Metal compatibility for CVPixelBuffers
 
 diff --git a/libavcodec/videotoolbox.c b/libavcodec/videotoolbox.c
-index 8773de33930..c9d775d82b1 100644
+index 43fd2e3fea..abbebbe32a 100644
 --- a/libavcodec/videotoolbox.c
 +++ b/libavcodec/videotoolbox.c
-@@ -700,11 +700,6 @@ static CFDictionaryRef videotoolbox_buffer_attributes_create(int width,
+@@ -783,11 +783,7 @@ static CFDictionaryRef videotoolbox_buffer_attributes_create(int width,
      CFDictionarySetValue(buffer_attributes, kCVPixelBufferIOSurfacePropertiesKey, io_surface_properties);
      CFDictionarySetValue(buffer_attributes, kCVPixelBufferWidthKey, w);
      CFDictionarySetValue(buffer_attributes, kCVPixelBufferHeightKey, h);
@@ -19,6 +17,7 @@ index 8773de33930..c9d775d82b1 100644
 -#else
 -    CFDictionarySetValue(buffer_attributes, kCVPixelBufferIOSurfaceOpenGLTextureCompatibilityKey, kCFBooleanTrue);
 -#endif
++    CFDictionarySetValue(buffer_attributes, kCVPixelBufferMetalCompatibilityKey, kCFBooleanTrue);
  
      CFRelease(io_surface_properties);
      CFRelease(cv_pix_fmt);
