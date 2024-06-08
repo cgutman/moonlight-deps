@@ -6,12 +6,7 @@ SCRIPTPATH=`dirname $SCRIPT`
 OUTDIR="$SCRIPTPATH/build/FFmpeg/build_$1"
 cd $SCRIPTPATH/FFmpeg
 
-if [ "$1" = "x86" ]; then
-    # x86 uses yasm for assembly
-    pacman --noconfirm -S yasm
-
-    TARGET_BUILD_ARGS="--arch=i686 --toolchain=msvc --enable-cross-compile"
-elif [ "$1" = "x64" ]; then
+if [ "$1" = "x64" ]; then
     # x64 uses yasm for assembly
     pacman --noconfirm -S yasm
 

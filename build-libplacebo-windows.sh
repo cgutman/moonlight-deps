@@ -4,9 +4,7 @@ SCRIPTPATH=`dirname $SCRIPT`
 OUTDIR="$SCRIPTPATH/build/libplacebo/build_$1"
 cd $SCRIPTPATH/libplacebo
 
-if [ "$1" = "x86" ]; then
-    MINGW_ENV="mingw-w64-clang-i686"
-elif [ "$1" = "x64" ]; then
+if [ "$1" = "x64" ]; then
     MINGW_ENV="mingw-w64-clang-x86_64"
 fi
 
