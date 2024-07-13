@@ -10,6 +10,7 @@ fi
 
 pacman --noconfirm -S $MINGW_ENV-cmake $MINGW_ENV-cc $MINGW_ENV-meson $MINGW_ENV-python-glad $MINGW_ENV-python-jinja $MINGW_ENV-vulkan $MINGW_ENV-fast_float $MINGW_ENV-glslang
 
+git submodule update --init
 LDFLAGS="-static-libstdc++ -Wl,-Bstatic" meson setup --prefix=$OUTDIR $EXTRA_ARGS -Ddemos=false -Dtests=false -Dopengl=disabled -Dd3d11=disabled -Dvulkan=enabled -Dvk-proc-addr=disabled -Dxxhash=disabled -Dshaderc=disabled --prefer-static build
 ninja -C build
 ninja -C build install
