@@ -7,6 +7,8 @@ copy discord-rpc\include\*.h output\include
 copy Detours\include\*.h output\include
 copy SDL_ttf\*.h output\include
 
+xcopy /e Vulkan-Headers\include output\include
+
 mkdir output\include\%1
 mkdir output\lib\%1
 

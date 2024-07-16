@@ -25,3 +25,6 @@
 [submodule "libplacebo"]
 	path = libplacebo
 	url = https://code.videolan.org/videolan/libplacebo.git
+[submodule "Vulkan-Headers"]
+	path = Vulkan-Headers
+	url = https://github.com/KhronosGroup/Vulkan-Headers.git
