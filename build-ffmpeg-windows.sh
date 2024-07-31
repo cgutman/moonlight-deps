@@ -6,6 +6,10 @@ SCRIPTPATH=`dirname $SCRIPT`
 OUTDIR="$SCRIPTPATH/build/FFmpeg/build_$1"
 cd $SCRIPTPATH/FFmpeg
 
+# Apply our FFmpeg patches
+git apply ../patches/ffmpeg_nvidia_vkvideo_crash.patch
+git apply ../patches/ffmpeg_intel_dxva_yuv444.patch
+
 if [ "$1" = "x64" ]; then
     # x64 uses yasm for assembly
     pacman --noconfirm -S yasm

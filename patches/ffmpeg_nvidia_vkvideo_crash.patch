@@ -1,0 +1,27 @@
+From dea1d9c67d0bf620c4ec6ae4e05651fdc14219e2 Mon Sep 17 00:00:00 2001
+From: Cameron Gutman <aicommander@gmail.com>
+Date: Sun, 28 Jul 2024 18:43:04 -0500
+Subject: [PATCH] Add workaround for Vulkan Video crash on Nvidia GPUs
+
+https://trac.ffmpeg.org/ticket/10847
+---
+ libavutil/vulkan.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/libavutil/vulkan.c b/libavutil/vulkan.c
+index 67b9526255..f17ba88550 100644
+--- a/libavutil/vulkan.c
++++ b/libavutil/vulkan.c
+@@ -606,6 +606,9 @@ int ff_vk_exec_add_dep_frame(FFVulkanContext *s, FFVkExecContext *e, AVFrame *f,
+     uint32_t *queue_family_dst;
+     VkAccessFlagBits *access_dst;
+ 
++    if (!f || !f->hw_frames_ctx)
++        return 1;
++
+     AVHWFramesContext *hwfc = (AVHWFramesContext *)f->hw_frames_ctx->data;
+     AVVulkanFramesContext *vkfc = hwfc->hwctx;
+     AVVkFrame *vkf = (AVVkFrame *)f->data[0];
+-- 
+2.44.0.windows.1
+

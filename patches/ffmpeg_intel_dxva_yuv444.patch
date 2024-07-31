@@ -1,0 +1,96 @@
+From 3b704c342c296f539668bc677f9733716ed64f54 Mon Sep 17 00:00:00 2001
+From: Cameron Gutman <aicommander@gmail.com>
+Date: Tue, 30 Jul 2024 21:02:28 -0500
+Subject: [PATCH] Add support for Intel's vendor-defined HEVC 4:4:4 10-bit DXVA
+ GUID
+
+---
+ libavcodec/dxva2.c   | 13 +++++++++++++
+ libavcodec/hevcdec.c | 12 ++++++++++++
+ 2 files changed, 25 insertions(+)
+
+diff --git a/libavcodec/dxva2.c b/libavcodec/dxva2.c
+index 59025633f7..45d78eb957 100644
+--- a/libavcodec/dxva2.c
++++ b/libavcodec/dxva2.c
+@@ -50,6 +50,8 @@ DEFINE_GUID(ff_DXVA2_NoEncrypt,          0x1b81beD0, 0xa0c7,0x11d3,0xb9,0x84,0x0
+ DEFINE_GUID(ff_GUID_NULL,                0x00000000, 0x0000,0x0000,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00);
+ DEFINE_GUID(ff_IID_IDirectXVideoDecoderService, 0xfc51a551,0xd5e7,0x11d9,0xaf,0x55,0x00,0x05,0x4e,0x43,0xff,0x02);
+ 
++DEFINE_GUID(ff_DXVA2_Intel_ModeHEVC_VLD_Main444_10,0x6a6a81ba,0x912a,0x485d,0xb5,0x7f,0xcc,0xd2,0xd3,0x7b,0x8d,0x94);
++
+ typedef struct dxva_mode {
+     const GUID     *guid;
+     enum AVCodecID codec;
+@@ -69,6 +71,8 @@ static const int prof_hevc_main[]    = {AV_PROFILE_HEVC_MAIN,
+                                         AV_PROFILE_UNKNOWN};
+ static const int prof_hevc_main10[]  = {AV_PROFILE_HEVC_MAIN_10,
+                                         AV_PROFILE_UNKNOWN};
++static const int prof_hevc_rext[]    = {AV_PROFILE_HEVC_REXT,
++                                        AV_PROFILE_UNKNOWN};
+ static const int prof_vp9_profile0[] = {AV_PROFILE_VP9_0,
+                                         AV_PROFILE_UNKNOWN};
+ static const int prof_vp9_profile2[] = {AV_PROFILE_VP9_2,
+@@ -96,6 +100,8 @@ static const dxva_mode dxva_modes[] = {
+     /* HEVC/H.265 */
+     { &ff_DXVA2_ModeHEVC_VLD_Main10, AV_CODEC_ID_HEVC, prof_hevc_main10 },
+     { &ff_DXVA2_ModeHEVC_VLD_Main,   AV_CODEC_ID_HEVC, prof_hevc_main },
++    /* Intel specific HEVC 4:4:4 8/10-bit profile */
++    { &ff_DXVA2_Intel_ModeHEVC_VLD_Main444_10, AV_CODEC_ID_HEVC, prof_hevc_rext },
+ 
+     /* VP8/9 */
+     { &ff_DXVA2_ModeVP9_VLD_Profile0,       AV_CODEC_ID_VP9, prof_vp9_profile0 },
+@@ -458,6 +464,13 @@ static DXGI_FORMAT d3d11va_map_sw_to_hw_format(enum AVPixelFormat pix_fmt)
+     case AV_PIX_FMT_NV12:       return DXGI_FORMAT_NV12;
+     case AV_PIX_FMT_P010:       return DXGI_FORMAT_P010;
+     case AV_PIX_FMT_YUV420P:    return DXGI_FORMAT_420_OPAQUE;
++    case AV_PIX_FMT_VUYX:       return DXGI_FORMAT_AYUV;
++    case AV_PIX_FMT_YUYV422:    return DXGI_FORMAT_YUY2;
++    case AV_PIX_FMT_Y210:       return DXGI_FORMAT_Y210;
++    case AV_PIX_FMT_XV30:       return DXGI_FORMAT_Y410;
++    case AV_PIX_FMT_P012:       return DXGI_FORMAT_P016;
++    case AV_PIX_FMT_Y212:       return DXGI_FORMAT_Y216;
++    case AV_PIX_FMT_XV36:       return DXGI_FORMAT_Y416;
+     default:                    return DXGI_FORMAT_UNKNOWN;
+     }
+ }
+diff --git a/libavcodec/hevcdec.c b/libavcodec/hevcdec.c
+index a130eb1d74..6fcdccd80b 100644
+--- a/libavcodec/hevcdec.c
++++ b/libavcodec/hevcdec.c
+@@ -465,6 +465,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+ #endif
+         break;
+     case AV_PIX_FMT_YUV444P:
++#if CONFIG_HEVC_D3D11VA_HWACCEL
++        *fmt++ = AV_PIX_FMT_D3D11VA_VLD;
++        *fmt++ = AV_PIX_FMT_D3D11;
++#endif
+ #if CONFIG_HEVC_VAAPI_HWACCEL
+         *fmt++ = AV_PIX_FMT_VAAPI;
+ #endif
+@@ -483,6 +487,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+         break;
+     case AV_PIX_FMT_YUV422P:
+     case AV_PIX_FMT_YUV422P10LE:
++#if CONFIG_HEVC_D3D11VA_HWACCEL
++        *fmt++ = AV_PIX_FMT_D3D11VA_VLD;
++        *fmt++ = AV_PIX_FMT_D3D11;
++#endif
+ #if CONFIG_HEVC_VAAPI_HWACCEL
+        *fmt++ = AV_PIX_FMT_VAAPI;
+ #endif
+@@ -494,6 +502,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+ #endif
+         break;
+     case AV_PIX_FMT_YUV444P10:
++#if CONFIG_HEVC_D3D11VA_HWACCEL
++        *fmt++ = AV_PIX_FMT_D3D11VA_VLD;
++        *fmt++ = AV_PIX_FMT_D3D11;
++#endif
+ #if CONFIG_HEVC_VIDEOTOOLBOX_HWACCEL
+         *fmt++ = AV_PIX_FMT_VIDEOTOOLBOX;
+ #endif
+-- 
+2.44.0.windows.1
+
