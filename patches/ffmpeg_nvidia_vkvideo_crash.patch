@@ -1,27 +1,32 @@
-From dea1d9c67d0bf620c4ec6ae4e05651fdc14219e2 Mon Sep 17 00:00:00 2001
-From: Cameron Gutman <aicommander@gmail.com>
-Date: Sun, 28 Jul 2024 18:43:04 -0500
-Subject: [PATCH] Add workaround for Vulkan Video crash on Nvidia GPUs
+From 938acb66c4d2bdbb09dd352c7c9b22b24cae7cac Mon Sep 17 00:00:00 2001
+From: Lynne <dev@lynne.ee>
+Date: Sat, 10 Aug 2024 17:13:57 +0200
+Subject: [PATCH] vulkan_decode: force layered_dpb to 0 when dedicated_dpb is 0
 
-https://trac.ffmpeg.org/ticket/10847
+layered_dpb only makes sense when dedicated_dpb is set to 1.
+For some mysterious reason, some Nvidia drivers stopped indicating
+SEPARATE_REFRENCES, but kept the COINCIDE flag, which broke
+the code.
 ---
- libavutil/vulkan.c | 3 +++
- 1 file changed, 3 insertions(+)
+ libavcodec/vulkan_decode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/libavutil/vulkan.c b/libavutil/vulkan.c
-index 67b9526255..f17ba88550 100644
---- a/libavutil/vulkan.c
-+++ b/libavutil/vulkan.c
-@@ -606,6 +606,9 @@ int ff_vk_exec_add_dep_frame(FFVulkanContext *s, FFVkExecContext *e, AVFrame *f,
-     uint32_t *queue_family_dst;
-     VkAccessFlagBits *access_dst;
+diff --git a/libavcodec/vulkan_decode.c b/libavcodec/vulkan_decode.c
+index 5f6523920d..7c791e9af1 100644
+--- a/libavcodec/vulkan_decode.c
++++ b/libavcodec/vulkan_decode.c
+@@ -911,9 +911,9 @@ static int vulkan_decode_get_profile(AVCodecContext *avctx, AVBufferRef *frames_
+         return AVERROR_EXTERNAL;
+     }
  
-+    if (!f || !f->hw_frames_ctx)
-+        return 1;
-+
-     AVHWFramesContext *hwfc = (AVHWFramesContext *)f->hw_frames_ctx->data;
-     AVVulkanFramesContext *vkfc = hwfc->hwctx;
-     AVVkFrame *vkf = (AVVkFrame *)f->data[0];
+-    /* TODO: make dedicated_dpb tunable */
+     dec->dedicated_dpb = !(dec_caps->flags & VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_COINCIDE_BIT_KHR);
+-    dec->layered_dpb = !(caps->flags & VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR);
++    dec->layered_dpb = !dec->dedicated_dpb ? 0 :
++                       !(caps->flags & VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR);
+ 
+     if (dec->dedicated_dpb) {
+         fmt_info.imageUsage = VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR;
 -- 
 2.44.0.windows.1
 

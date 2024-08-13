@@ -8,7 +8,7 @@ cd $SCRIPTPATH/FFmpeg
 
 # Apply our FFmpeg patches
 git apply ../patches/ffmpeg_nvidia_vkvideo_crash.patch
-git apply ../patches/ffmpeg_intel_dxva_yuv444.patch
+git apply ../patches/ffmpeg_dxva_hevc_rext.patch
 
 if [ "$1" = "x64" ]; then
     # x64 uses yasm for assembly
