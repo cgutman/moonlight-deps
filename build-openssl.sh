@@ -4,9 +4,15 @@ pushd ../openssl
 
 # Build OpenSSL
 mkdir ../build/openssl/build_$1
-./Configure --prefix=$PWD/../build/openssl/build_$1 --openssldir=$PWD/../build/openssl/build_$1 $2 -mmacosx-version-min=$MACOS_MIN no-tests
+INSTALLPREFIX=$PWD/../build/openssl/build_$1
+./Configure --prefix=$INSTALLPREFIX --openssldir=$INSTALLPREFIX $2 -mmacosx-version-min=$MACOS_MIN no-tests
 make -j$(sysctl -n hw.ncpu)
 make install_sw
+
+# Patch the library paths
+install_name_tool -id @loader_path/../Frameworks/libcrypto.3.dylib $INSTALLPREFIX/lib/libcrypto.3.dylib
+install_name_tool -id @loader_path/../Frameworks/libssl.3.dylib $INSTALLPREFIX/lib/libssl.3.dylib
+install_name_tool -change $INSTALLPREFIX/lib/libcrypto.3.dylib @loader_path/../Frameworks/libcrypto.3.dylib $INSTALLPREFIX/lib/libssl.3.dylib
 
 # Clean up in-tree build
 git reset --hard
