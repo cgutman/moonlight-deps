@@ -6,7 +6,7 @@ cd ..\openssl
 rem Build OpenSSL
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %2
 mkdir ..\build\openssl\build_%1
-perl Configure --prefix=%CD%\..\build\openssl\build_%1 --openssldir=%CD%\..\build\openssl\build_%1 %3 no-tests
+perl Configure --prefix=%CD%\..\build\openssl\build_%1 --openssldir=%CD%\..\build\openssl\build_%1 %3 no-tests no-engine no-apps no-legacy no-dso
 nmake
 nmake install_sw
 
