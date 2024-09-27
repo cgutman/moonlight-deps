@@ -1,138 +1,10 @@
-From patchwork Thu Sep 26 21:24:48 2024
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Patchwork-Submitter: =?utf-8?q?Martin_Storsj=C3=B6?= <martin@martin.st>
-X-Patchwork-Id: 51874
-Delivered-To: ffmpegpatchwork2@gmail.com
-Received: by 2002:a59:b66f:0:b0:48e:c0f8:d0de with SMTP id o15csp665439vqw;
-        Thu, 26 Sep 2024 14:25:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=2;
- AJvYcCXjxC7HVfz05CoGcIfQbPWJ2NulO53UiR2CR6WgUnnovWEIpo8ZEGvSQLe2YzKOiOz0RQG34AIP5iMO688PA2HZ@gmail.com
-X-Google-Smtp-Source: 
- AGHT+IHlHsYevaAES3IW+HPKaEvzi8XhjcmQ5jDXoGvEHtogWmZa4XmEdVCx7y7VMw30YKag25om
-X-Received: by 2002:a05:651c:2203:b0:2f0:1a8f:4cd2 with SMTP id
- 38308e7fff4ca-2f9d41c1880mr7021581fa.33.1727385918337;
-        Thu, 26 Sep 2024 14:25:18 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1727385918; cv=none;
-        d=google.com; s=arc-20240605;
-        b=DNAbpRjRH/1Dwuhs+G7O1I4tik83MjWJ+LLYsImO5WF7/IeApw9FQWbkiLgGlWrpAz
-         PQiXo7HguASHyZJezuNXf/+++p2oxcDiasgtxnYMYJ85pDITjMEFiUXApUZfl8ECs+cd
-         xzztQpU1Dziu8AfGhBjG2mJ1iDP7UzrQQ/wyOOUQjxfJx6/AIXUpp/E1GcOaSocVxV8r
-         HhhwBHrVOrTWzFsjl6950pEZvNeWrTEtYVbTd5Hb0OuEd5nJfqn0l0ey+qSEWBhPG2td
-         RNLZRwM7HKSFmbCmjXRT59jqHdnWPZfCIcka6C7toN3NXBox7E9InyLn9SHuu0awCzKf
-         jklg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605;
-        h=sender:errors-to:content-transfer-encoding:cc:reply-to
-         :list-subscribe:list-help:list-post:list-archive:list-unsubscribe
-         :list-id:precedence:subject:mime-version:message-id:date:to:from
-         :dkim-signature:delivered-to;
-        bh=zOfxyLfhRvF7PFMraOqH0Z5FBEIBvtb/RJYbfQRAy24=;
-        fh=ADZL3kelT51WzKETf43pSQOHYlnjzq5gvRY+lTN1Y6o=;
-        b=Jyrg87UgOnHAy21/4lkgvfbBuUGeHubfC3oLdPe6QD+sNSRAsGrjmQCJ11FRvrzUj+
-         svxc25f/X8WwvbZKIvWzJ0TJdXffDI3WgHtG3z3+M/9C8Gi1G04SSv1L2Pq8kirbrPoQ
-         j0NroVzJ1jkWbM9tLJFvSjUtreJ+RosE7PbIdpGM660kdDTQP/S4kNhu8f0PxShYGj3D
-         D1j2tmzzvBonxxu4gN4JiB7qLoEhizC9ZFYXckpExKJ3tk0cqEP1pnW1KBGJZf1XnuEN
-         c4K0XoGZY/4lZJjXXMnDL6oPw4dUtjDIuGWCAa46bPklNLtDw15oh3rp90Hplj2o4mB7
-         LmCg==;
-        dara=google.com
-ARC-Authentication-Results: i=1; mx.google.com;
-       dkim=neutral (body hash did not verify)
- header.i=@martin-st.20230601.gappssmtp.com header.s=20230601
- header.b=RtbaHPXC;
-       spf=pass (google.com: domain of ffmpeg-devel-bounces@ffmpeg.org
- designates 79.124.17.100 as permitted sender)
- smtp.mailfrom=ffmpeg-devel-bounces@ffmpeg.org;
-       dara=fail header.i=@gmail.com
-Return-Path: <ffmpeg-devel-bounces@ffmpeg.org>
-Received: from ffbox0-bg.mplayerhq.hu (ffbox0-bg.ffmpeg.org. [79.124.17.100])
-        by mx.google.com with ESMTP id
- 38308e7fff4ca-2f9d465f5f3si1281491fa.625.2024.09.26.14.25.16;
-        Thu, 26 Sep 2024 14:25:18 -0700 (PDT)
-Received-SPF: pass (google.com: domain of ffmpeg-devel-bounces@ffmpeg.org
- designates 79.124.17.100 as permitted sender) client-ip=79.124.17.100;
-Authentication-Results: mx.google.com;
-       dkim=neutral (body hash did not verify)
- header.i=@martin-st.20230601.gappssmtp.com header.s=20230601
- header.b=RtbaHPXC;
-       spf=pass (google.com: domain of ffmpeg-devel-bounces@ffmpeg.org
- designates 79.124.17.100 as permitted sender)
- smtp.mailfrom=ffmpeg-devel-bounces@ffmpeg.org;
-       dara=fail header.i=@gmail.com
-Received: from [127.0.1.1] (localhost [127.0.0.1])
-	by ffbox0-bg.mplayerhq.hu (Postfix) with ESMTP id BCA5D68DA0A;
-	Fri, 27 Sep 2024 00:25:00 +0300 (EEST)
-X-Original-To: ffmpeg-devel@ffmpeg.org
-Delivered-To: ffmpeg-devel@ffmpeg.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com
- [209.85.167.52])
- by ffbox0-bg.mplayerhq.hu (Postfix) with ESMTPS id 4066568D863
- for <ffmpeg-devel@ffmpeg.org>; Fri, 27 Sep 2024 00:24:53 +0300 (EEST)
-Received: by mail-lf1-f52.google.com with SMTP id
- 2adb3069b0e04-5356ab89665so1837251e87.1
- for <ffmpeg-devel@ffmpeg.org>; Thu, 26 Sep 2024 14:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=martin-st.20230601.gappssmtp.com; s=20230601; t=1727385889; x=1727990689;
- darn=ffmpeg.org;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=Cw8yPPBKrPbMMOsFuV1qsGykk8Rg76zzFW4n+ftN7iA=;
- b=RtbaHPXCgWAvcalmbLARk4eguoW7I0g27DMdbtZBBC7EmfQYALMIwOAjrLzZrZdUIc
- OETumfvww6paeippN8bekZBoI5yAJuVdBaRMLXo3TyVGzwNzOwrlJ5p1lZFnJu3DCFUm
- xUiozemzA2YUzhpXRvumNg/zQqf6CqLXYys0NVKOgSonS/lcpIVtH573lcHds0XEjmRD
- hzjHTIW9Ocb/b888O6zA+o8nIJDnDSm/JoCP4O8atLNYFCwyA380RSg+X+frY5Lif3RU
- FXzMLRlzzpugxQbNhrlFjG+REs8fz5duXVbEauEoE6e6Ff5YRzJLm5pYUw6HUgR2MAlU
- 5JJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1727385889; x=1727990689;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=Cw8yPPBKrPbMMOsFuV1qsGykk8Rg76zzFW4n+ftN7iA=;
- b=oxN7mLoYh/V9xl38EiRh2dcOVxz7lHuBTh2PU3QBqhRhI9i4rWysE9xxyzHSMSlTk4
- fEpZY7tKJabqs2oYYVKqPGMQmo1858+MzHIQ1U/+UvMwNBMrHi9UBlf56Snlp2NWJdDL
- HC0BPDeTf0if08nbtvz/s4XlgR7HD044X6ehCX4Gu69EcRgSdbE5QFZTU8AjDbjTa1aJ
- dPLfJHdIBXY8xPsTtbg+zso4DD2V2+oyWOAkmQNe/UvwMsPExYZ3ZtzGbcRDfj4bFL8k
- zCpLUjcYVXKYZwp9ehxmjhFjyCi2/KFjsgIbzixQ4M7hxt9Gl1YwSiI3ZWq7fYFOWLyl
- UA1g==
-X-Gm-Message-State: AOJu0YxrCZqAfMnwtEyyc7Re+CYWYijv8gkk2Y9wNXnN8JTSyheWhxHn
- +u+UBzii+e4Ni8bX819wt2+ddfT2xUQp3GxEMQZByglNPAICxgOwHOeIBkQEeoz+TeBepUxD7K5
- Oqg==
-X-Received: by 2002:ac2:4bc4:0:b0:536:548a:ff7f with SMTP id
- 2adb3069b0e04-5389fc80f3bmr537992e87.58.1727385889053;
- Thu, 26 Sep 2024 14:24:49 -0700 (PDT)
-Received: from localhost (host-114-191.parnet.fi. [77.234.114.191])
- by smtp.gmail.com with ESMTPSA id
- 2adb3069b0e04-538a04321e8sm74209e87.151.2024.09.26.14.24.48
- (version=TLS1 cipher=AES128-SHA bits=128/128);
- Thu, 26 Sep 2024 14:24:48 -0700 (PDT)
-From: =?utf-8?q?Martin_Storsj=C3=B6?= <martin@martin.st>
-To: ffmpeg-devel@ffmpeg.org
+From 63ec51870e2c727abd10130f6a3830c4b82f7056 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan=20Ekstr=C3=B6m?= <jeebjp@gmail.com>
 Date: Fri, 27 Sep 2024 00:24:48 +0300
-Message-Id: <20240926212448.23545-1-martin@martin.st>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+Subject: [PATCH] avcodec/videotoolbox: add AV1 hardware acceleration
 MIME-Version: 1.0
-Subject: [FFmpeg-devel] [PATCH v3] avcodec/videotoolbox: add AV1 hardware
- acceleration
-X-BeenThere: ffmpeg-devel@ffmpeg.org
-X-Mailman-Version: 2.1.29
-Precedence: list
-List-Id: FFmpeg development discussions and patches <ffmpeg-devel.ffmpeg.org>
-List-Unsubscribe: <https://ffmpeg.org/mailman/options/ffmpeg-devel>,
- <mailto:ffmpeg-devel-request@ffmpeg.org?subject=unsubscribe>
-List-Archive: <https://ffmpeg.org/pipermail/ffmpeg-devel>
-List-Post: <mailto:ffmpeg-devel@ffmpeg.org>
-List-Help: <mailto:ffmpeg-devel-request@ffmpeg.org?subject=help>
-List-Subscribe: <https://ffmpeg.org/mailman/listinfo/ffmpeg-devel>,
- <mailto:ffmpeg-devel-request@ffmpeg.org?subject=subscribe>
-Reply-To: FFmpeg development discussions and patches <ffmpeg-devel@ffmpeg.org>
-Cc: Ruslan Chernenko <ractyfree@gmail.com>, James Almer <jamrial@gmail.com>
-Errors-To: ffmpeg-devel-bounces@ffmpeg.org
-Sender: "ffmpeg-devel" <ffmpeg-devel-bounces@ffmpeg.org>
-X-TUID: +EkBYS0Wcs4A
-
-From: Jan Ekström <jeebjp@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Use AV1DecContext's current_obu to access the original OBUs, and
 feed them to videotoolbox, rather than the bare slice data passed
@@ -143,9 +15,6 @@ of the current range of OBUs that belong to the current frame.
 
 Co-authored-by: Ruslan Chernenko <ractyfree@gmail.com>
 Co-authored-by: Martin Storsjö <martin@martin.st>
----
-v3: Adjust where nb_unit/start_unit are set, add code comments explaining
-the roles of nb_unit/start_unit.
 ---
  configure                     |   4 ++
  libavcodec/Makefile           |   1 +
@@ -159,10 +28,10 @@ the roles of nb_unit/start_unit.
  create mode 100644 libavcodec/videotoolbox_av1.c
 
 diff --git a/configure b/configure
-index 643ffddd19..9d0c1423f1 100755
+index 86425130bd..ad7c850b8a 100755
 --- a/configure
 +++ b/configure
-@@ -2467,6 +2467,7 @@ TYPES_LIST="
+@@ -2457,6 +2457,7 @@ TYPES_LIST="
      kCMVideoCodecType_HEVC
      kCMVideoCodecType_HEVCWithAlpha
      kCMVideoCodecType_VP9
@@ -170,7 +39,7 @@ index 643ffddd19..9d0c1423f1 100755
      kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange
      kCVPixelFormatType_422YpCbCr8BiPlanarVideoRange
      kCVPixelFormatType_422YpCbCr10BiPlanarVideoRange
-@@ -3174,6 +3175,8 @@ av1_vaapi_hwaccel_deps="vaapi VADecPictureParameterBufferAV1_bit_depth_idx"
+@@ -3147,6 +3148,8 @@ av1_vaapi_hwaccel_deps="vaapi VADecPictureParameterBufferAV1_bit_depth_idx"
  av1_vaapi_hwaccel_select="av1_decoder"
  av1_vdpau_hwaccel_deps="vdpau VdpPictureInfoAV1"
  av1_vdpau_hwaccel_select="av1_decoder"
@@ -179,7 +48,7 @@ index 643ffddd19..9d0c1423f1 100755
  av1_vulkan_hwaccel_deps="vulkan"
  av1_vulkan_hwaccel_select="av1_decoder"
  h263_vaapi_hwaccel_deps="vaapi"
-@@ -6707,6 +6710,7 @@ enabled videotoolbox && {
+@@ -6658,6 +6661,7 @@ enabled videotoolbox && {
      check_func_headers CoreMedia/CMFormatDescription.h kCMVideoCodecType_HEVC "-framework CoreMedia"
      check_func_headers CoreMedia/CMFormatDescription.h kCMVideoCodecType_HEVCWithAlpha "-framework CoreMedia"
      check_func_headers CoreMedia/CMFormatDescription.h kCMVideoCodecType_VP9 "-framework CoreMedia"
@@ -188,10 +57,10 @@ index 643ffddd19..9d0c1423f1 100755
      check_func_headers CoreVideo/CVPixelBuffer.h kCVPixelFormatType_422YpCbCr8BiPlanarVideoRange "-framework CoreVideo"
      check_func_headers CoreVideo/CVPixelBuffer.h kCVPixelFormatType_422YpCbCr10BiPlanarVideoRange "-framework CoreVideo"
 diff --git a/libavcodec/Makefile b/libavcodec/Makefile
-index a4fcce3b42..21188b2479 100644
+index 113adb22d5..7d2d56517d 100644
 --- a/libavcodec/Makefile
 +++ b/libavcodec/Makefile
-@@ -1008,6 +1008,7 @@ OBJS-$(CONFIG_AV1_D3D12VA_HWACCEL)        += dxva2_av1.o d3d12va_av1.o
+@@ -1000,6 +1000,7 @@ OBJS-$(CONFIG_AV1_D3D12VA_HWACCEL)        += dxva2_av1.o d3d12va_av1.o
  OBJS-$(CONFIG_AV1_NVDEC_HWACCEL)          += nvdec_av1.o
  OBJS-$(CONFIG_AV1_VAAPI_HWACCEL)          += vaapi_av1.o
  OBJS-$(CONFIG_AV1_VDPAU_HWACCEL)          += vdpau_av1.o
@@ -200,10 +69,10 @@ index a4fcce3b42..21188b2479 100644
  OBJS-$(CONFIG_H263_VAAPI_HWACCEL)         += vaapi_mpeg4.o
  OBJS-$(CONFIG_H263_VIDEOTOOLBOX_HWACCEL)  += videotoolbox.o
 diff --git a/libavcodec/av1dec.c b/libavcodec/av1dec.c
-index 80e52d1bea..bc4ef63e68 100644
+index 32c2379a45..8aa4ec56bb 100644
 --- a/libavcodec/av1dec.c
 +++ b/libavcodec/av1dec.c
-@@ -543,6 +543,7 @@ static int get_pixel_format(AVCodecContext *avctx)
+@@ -540,6 +540,7 @@ static int get_pixel_format(AVCodecContext *avctx)
                       CONFIG_AV1_NVDEC_HWACCEL + \
                       CONFIG_AV1_VAAPI_HWACCEL + \
                       CONFIG_AV1_VDPAU_HWACCEL + \
@@ -211,7 +80,7 @@ index 80e52d1bea..bc4ef63e68 100644
                       CONFIG_AV1_VULKAN_HWACCEL)
      enum AVPixelFormat pix_fmts[HWACCEL_MAX + 2], *fmtp = pix_fmts;
  
-@@ -570,6 +571,9 @@ static int get_pixel_format(AVCodecContext *avctx)
+@@ -567,6 +568,9 @@ static int get_pixel_format(AVCodecContext *avctx)
  #if CONFIG_AV1_VDPAU_HWACCEL
          *fmtp++ = AV_PIX_FMT_VDPAU;
  #endif
@@ -221,7 +90,7 @@ index 80e52d1bea..bc4ef63e68 100644
  #if CONFIG_AV1_VULKAN_HWACCEL
          *fmtp++ = AV_PIX_FMT_VULKAN;
  #endif
-@@ -594,6 +598,9 @@ static int get_pixel_format(AVCodecContext *avctx)
+@@ -591,6 +595,9 @@ static int get_pixel_format(AVCodecContext *avctx)
  #if CONFIG_AV1_VDPAU_HWACCEL
          *fmtp++ = AV_PIX_FMT_VDPAU;
  #endif
@@ -231,7 +100,7 @@ index 80e52d1bea..bc4ef63e68 100644
  #if CONFIG_AV1_VULKAN_HWACCEL
          *fmtp++ = AV_PIX_FMT_VULKAN;
  #endif
-@@ -1441,6 +1448,10 @@ static int av1_receive_frame_internal(AVCodecContext *avctx, AVFrame *frame)
+@@ -1479,6 +1486,10 @@ static int av1_receive_frame_internal(AVCodecContext *avctx, AVFrame *frame)
  
          if (raw_tile_group && (s->tile_num == raw_tile_group->tg_end + 1)) {
              int show_frame = s->raw_frame_header->show_frame;
@@ -239,19 +108,19 @@ index 80e52d1bea..bc4ef63e68 100644
 +            // OBUs have been processed for this current frame. (If this
 +            // frame gets output, we set nb_unit to this value later too.)
 +            s->nb_unit = i + 1;
-             if (avctx->hwaccel && s->cur_frame.f) {
+             if (avctx->hwaccel && s->cur_frame.f->buf[0]) {
                  ret = FF_HW_SIMPLE_CALL(avctx, end_frame);
                  if (ret < 0) {
-@@ -1451,6 +1462,8 @@ static int av1_receive_frame_internal(AVCodecContext *avctx, AVFrame *frame)
- 
-             update_reference_list(avctx);
- 
+@@ -1500,6 +1511,8 @@ static int av1_receive_frame_internal(AVCodecContext *avctx, AVFrame *frame)
+                     goto end;
+                 }
+             }
 +            // Set start_unit to indicate the first OBU of the next frame.
-+            s->start_unit       = s->nb_unit;
-             raw_tile_group      = NULL;
++            s->start_unit = s->nb_unit;
+             raw_tile_group = NULL;
              s->raw_frame_header = NULL;
- 
-@@ -1480,7 +1493,7 @@ end:
+             if (show_frame) {
+@@ -1519,7 +1532,7 @@ end:
              s->raw_frame_header = NULL;
          av_packet_unref(s->pkt);
          ff_cbs_fragment_reset(&s->current_obu);
@@ -260,7 +129,7 @@ index 80e52d1bea..bc4ef63e68 100644
      }
      if (!ret && !frame->buf[0])
          ret = AVERROR(EAGAIN);
-@@ -1507,7 +1520,7 @@ static int av1_receive_frame(AVCodecContext *avctx, AVFrame *frame)
+@@ -1546,7 +1559,7 @@ static int av1_receive_frame(AVCodecContext *avctx, AVFrame *frame)
                  return ret;
              }
  
@@ -269,7 +138,7 @@ index 80e52d1bea..bc4ef63e68 100644
              av_log(avctx, AV_LOG_DEBUG, "Total OBUs on this packet: %d.\n",
                     s->current_obu.nb_units);
          }
-@@ -1528,7 +1541,7 @@ static void av1_decode_flush(AVCodecContext *avctx)
+@@ -1567,7 +1580,7 @@ static void av1_decode_flush(AVCodecContext *avctx)
  
      av1_frame_unref(&s->cur_frame);
      s->operating_point_idc = 0;
@@ -278,7 +147,7 @@ index 80e52d1bea..bc4ef63e68 100644
      s->raw_frame_header = NULL;
      s->raw_seq = NULL;
      s->cll = NULL;
-@@ -1596,6 +1609,9 @@ const FFCodec ff_av1_decoder = {
+@@ -1633,6 +1646,9 @@ const FFCodec ff_av1_decoder = {
  #if CONFIG_AV1_VDPAU_HWACCEL
          HWACCEL_VDPAU(av1),
  #endif
@@ -289,10 +158,10 @@ index 80e52d1bea..bc4ef63e68 100644
          HWACCEL_VULKAN(av1),
  #endif
 diff --git a/libavcodec/av1dec.h b/libavcodec/av1dec.h
-index 8b2a7b0896..10c807f73f 100644
+index b903b359c5..c576a71e45 100644
 --- a/libavcodec/av1dec.h
 +++ b/libavcodec/av1dec.h
-@@ -114,7 +114,8 @@ typedef struct AV1DecContext {
+@@ -108,7 +108,8 @@ typedef struct AV1DecContext {
      AV1Frame ref[AV1_NUM_REF_FRAMES];
      AV1Frame cur_frame;
  
@@ -315,10 +184,10 @@ index 5171e4c7d7..2b9bdc8fc9 100644
  extern const struct FFHWAccel ff_h263_vaapi_hwaccel;
  extern const struct FFHWAccel ff_h263_videotoolbox_hwaccel;
 diff --git a/libavcodec/videotoolbox.c b/libavcodec/videotoolbox.c
-index 3c6df8b4ab..90c1fbfb10 100644
+index f4da80640d..392917ac69 100644
 --- a/libavcodec/videotoolbox.c
 +++ b/libavcodec/videotoolbox.c
-@@ -56,6 +56,10 @@ enum { kCMVideoCodecType_HEVC = 'hvc1' };
+@@ -55,6 +55,10 @@ enum { kCMVideoCodecType_HEVC = 'hvc1' };
  enum { kCMVideoCodecType_VP9 = 'vp09' };
  #endif
  
@@ -329,7 +198,7 @@ index 3c6df8b4ab..90c1fbfb10 100644
  #define VIDEOTOOLBOX_ESDS_EXTRADATA_PADDING  12
  
  typedef struct VTHWFrame {
-@@ -92,6 +96,26 @@ int ff_videotoolbox_buffer_copy(VTContext *vtctx,
+@@ -91,6 +95,26 @@ int ff_videotoolbox_buffer_copy(VTContext *vtctx,
      return 0;
  }
  
@@ -356,7 +225,7 @@ index 3c6df8b4ab..90c1fbfb10 100644
  static int videotoolbox_postproc_frame(void *avctx, AVFrame *frame)
  {
      int ret;
-@@ -846,6 +870,13 @@ static CFDictionaryRef videotoolbox_decoder_config_create(CMVideoCodecType codec
+@@ -845,6 +869,13 @@ static CFDictionaryRef videotoolbox_decoder_config_create(CMVideoCodecType codec
          if (data)
              CFDictionarySetValue(avc_info, CFSTR("vpcC"), data);
          break;
@@ -370,7 +239,7 @@ index 3c6df8b4ab..90c1fbfb10 100644
  #endif
      default:
          break;
-@@ -912,6 +943,9 @@ static int videotoolbox_start(AVCodecContext *avctx)
+@@ -911,6 +942,9 @@ static int videotoolbox_start(AVCodecContext *avctx)
      case AV_CODEC_ID_VP9 :
          videotoolbox->cm_codec_type = kCMVideoCodecType_VP9;
          break;
@@ -512,3 +381,6 @@ index 9502d7c7dc..effa96fc15 100644
  CFDataRef ff_videotoolbox_avcc_extradata_create(AVCodecContext *avctx);
  CFDataRef ff_videotoolbox_hvcc_extradata_create(AVCodecContext *avctx);
  CFDataRef ff_videotoolbox_vpcc_extradata_create(AVCodecContext *avctx);
+-- 
+2.45.2.windows.1
+
