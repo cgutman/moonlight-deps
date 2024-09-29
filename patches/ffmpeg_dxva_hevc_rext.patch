@@ -1,4 +1,4 @@
-From fe149b0fbc018c5dcb9c814b35745cf3e1362f9a Mon Sep 17 00:00:00 2001
+From 8580dafe7956e86e5995fed23521a5c67bef5292 Mon Sep 17 00:00:00 2001
 From: Cameron Gutman <aicommander@gmail.com>
 Date: Tue, 30 Jul 2024 21:02:28 -0500
 Subject: [PATCH] avcodec/dxva2: add support for new HEVC RExt DXVA profiles
@@ -8,14 +8,14 @@ Signed-off-by: Cameron Gutman <aicommander@gmail.com>
  libavcodec/dxva2.c          | 20 ++++++++++++++
  libavcodec/dxva2_hevc.c     | 52 ++++++++++++++++++++++++++++++-------
  libavcodec/dxva2_internal.h | 37 +++++++++++++++++++++++++-
- libavcodec/hevcdec.c        | 16 ++++++++++++
+ libavcodec/hevc/hevcdec.c   | 16 ++++++++++++
  4 files changed, 114 insertions(+), 11 deletions(-)
 
 diff --git a/libavcodec/dxva2.c b/libavcodec/dxva2.c
-index 59025633f7..c78b25b4ff 100644
+index 22ecd5acaf..3a3845d775 100644
 --- a/libavcodec/dxva2.c
 +++ b/libavcodec/dxva2.c
-@@ -43,6 +43,14 @@ DEFINE_GUID(ff_DXVA2_ModeVC1_D,          0x1b81beA3, 0xa0c7,0x11d3,0xb9,0x84,0x0
+@@ -44,6 +44,14 @@ DEFINE_GUID(ff_DXVA2_ModeVC1_D,          0x1b81beA3, 0xa0c7,0x11d3,0xb9,0x84,0x0
  DEFINE_GUID(ff_DXVA2_ModeVC1_D2010,      0x1b81beA4, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
  DEFINE_GUID(ff_DXVA2_ModeHEVC_VLD_Main,  0x5b11d51b, 0x2f4c,0x4452,0xbc,0xc3,0x09,0xf2,0xa1,0x16,0x0c,0xc0);
  DEFINE_GUID(ff_DXVA2_ModeHEVC_VLD_Main10,0x107af0e0, 0xef1a,0x4d19,0xab,0xa8,0x67,0xa1,0x63,0x07,0x3d,0x13);
@@ -30,7 +30,7 @@ index 59025633f7..c78b25b4ff 100644
  DEFINE_GUID(ff_DXVA2_ModeVP9_VLD_Profile0,0x463707f8,0xa1d0,0x4585,0x87,0x6d,0x83,0xaa,0x6d,0x60,0xb8,0x9e);
  DEFINE_GUID(ff_DXVA2_ModeVP9_VLD_10bit_Profile2,0xa4c749ef,0x6ecf,0x48aa,0x84,0x48,0x50,0xa7,0xa1,0x16,0x5f,0xf7);
  DEFINE_GUID(ff_DXVA2_ModeAV1_VLD_Profile0,0xb8be4ccb,0xcf53,0x46ba,0x8d,0x59,0xd6,0xb8,0xa6,0xda,0x5d,0x2a);
-@@ -69,6 +77,8 @@ static const int prof_hevc_main[]    = {AV_PROFILE_HEVC_MAIN,
+@@ -70,6 +78,8 @@ static const int prof_hevc_main[]    = {AV_PROFILE_HEVC_MAIN,
                                          AV_PROFILE_UNKNOWN};
  static const int prof_hevc_main10[]  = {AV_PROFILE_HEVC_MAIN_10,
                                          AV_PROFILE_UNKNOWN};
@@ -39,7 +39,7 @@ index 59025633f7..c78b25b4ff 100644
  static const int prof_vp9_profile0[] = {AV_PROFILE_VP9_0,
                                          AV_PROFILE_UNKNOWN};
  static const int prof_vp9_profile2[] = {AV_PROFILE_VP9_2,
-@@ -97,6 +107,9 @@ static const dxva_mode dxva_modes[] = {
+@@ -98,6 +108,9 @@ static const dxva_mode dxva_modes[] = {
      { &ff_DXVA2_ModeHEVC_VLD_Main10, AV_CODEC_ID_HEVC, prof_hevc_main10 },
      { &ff_DXVA2_ModeHEVC_VLD_Main,   AV_CODEC_ID_HEVC, prof_hevc_main },
  
@@ -49,7 +49,7 @@ index 59025633f7..c78b25b4ff 100644
      /* VP8/9 */
      { &ff_DXVA2_ModeVP9_VLD_Profile0,       AV_CODEC_ID_VP9, prof_vp9_profile0 },
      { &ff_DXVA2_ModeVP9_VLD_10bit_Profile2, AV_CODEC_ID_VP9, prof_vp9_profile2 },
-@@ -458,6 +471,13 @@ static DXGI_FORMAT d3d11va_map_sw_to_hw_format(enum AVPixelFormat pix_fmt)
+@@ -459,6 +472,13 @@ static DXGI_FORMAT d3d11va_map_sw_to_hw_format(enum AVPixelFormat pix_fmt)
      case AV_PIX_FMT_NV12:       return DXGI_FORMAT_NV12;
      case AV_PIX_FMT_P010:       return DXGI_FORMAT_P010;
      case AV_PIX_FMT_YUV420P:    return DXGI_FORMAT_420_OPAQUE;
@@ -64,7 +64,7 @@ index 59025633f7..c78b25b4ff 100644
      }
  }
 diff --git a/libavcodec/dxva2_hevc.c b/libavcodec/dxva2_hevc.c
-index 31d74a7164..95e2d9a7d5 100644
+index d01d1e76e8..d4deaa6df7 100644
 --- a/libavcodec/dxva2_hevc.c
 +++ b/libavcodec/dxva2_hevc.c
 @@ -32,12 +32,15 @@
@@ -89,7 +89,7 @@ index 31d74a7164..95e2d9a7d5 100644
  };
  
  static void fill_picture_entry(DXVA_PicEntry_HEVC *pic,
-@@ -58,15 +61,16 @@ static int get_refpic_index(const DXVA_PicParams_HEVC *pp, int surface_index)
+@@ -58,8 +61,9 @@ static int get_refpic_index(const DXVA_PicParams_HEVC *pp, int surface_index)
  }
  
  void ff_dxva2_hevc_fill_picture_parameters(const AVCodecContext *avctx, AVDXVAContext *ctx,
@@ -98,9 +98,10 @@ index 31d74a7164..95e2d9a7d5 100644
  {
 +    DXVA_PicParams_HEVC *pp = &ppext->params;
      const HEVCContext *h = avctx->priv_data;
-     const HEVCFrame *current_picture = h->ref;
-     const HEVCSPS *sps = h->ps.sps;
-     const HEVCPPS *pps = h->ps.pps;
+     const HEVCLayerContext *l = &h->layers[h->cur_layer];
+     const HEVCFrame *current_picture = h->cur_frame;
+@@ -67,7 +71,7 @@ void ff_dxva2_hevc_fill_picture_parameters(const AVCodecContext *avctx, AVDXVACo
+     const HEVCSPS *sps = pps->sps;
      int i, j;
  
 -    memset(pp, 0, sizeof(*pp));
@@ -108,21 +109,21 @@ index 31d74a7164..95e2d9a7d5 100644
  
      pp->PicWidthInMinCbsY  = sps->min_cb_width;
      pp->PicHeightInMinCbsY = sps->min_cb_height;
-@@ -199,6 +203,32 @@ void ff_dxva2_hevc_fill_picture_parameters(const AVCodecContext *avctx, AVDXVACo
+@@ -200,6 +204,32 @@ void ff_dxva2_hevc_fill_picture_parameters(const AVCodecContext *avctx, AVDXVACo
      DO_REF_LIST(LT_CURR, RefPicSetLtCurr);
  
      pp->StatusReportFeedbackNumber = 1 + DXVA_CONTEXT_REPORT_ID(avctx, ctx)++;
 +
-+    if (sps->sps_range_extension_flag) {
-+        ppext->transform_skip_rotation_enabled_flag    = sps->transform_skip_rotation_enabled_flag;
-+        ppext->transform_skip_context_enabled_flag     = sps->transform_skip_context_enabled_flag;
-+        ppext->implicit_rdpcm_enabled_flag             = sps->implicit_rdpcm_enabled_flag;
-+        ppext->explicit_rdpcm_enabled_flag             = sps->explicit_rdpcm_enabled_flag;
-+        ppext->extended_precision_processing_flag      = sps->extended_precision_processing_flag;
-+        ppext->intra_smoothing_disabled_flag           = sps->intra_smoothing_disabled_flag;
-+        ppext->persistent_rice_adaptation_enabled_flag = sps->persistent_rice_adaptation_enabled_flag;
-+        ppext->high_precision_offsets_enabled_flag     = sps->high_precision_offsets_enabled_flag;
-+        ppext->cabac_bypass_alignment_enabled_flag     = sps->cabac_bypass_alignment_enabled_flag;
++    if (sps->range_extension) {
++        ppext->transform_skip_rotation_enabled_flag    = sps->transform_skip_rotation_enabled;
++        ppext->transform_skip_context_enabled_flag     = sps->transform_skip_context_enabled;
++        ppext->implicit_rdpcm_enabled_flag             = sps->implicit_rdpcm_enabled;
++        ppext->explicit_rdpcm_enabled_flag             = sps->explicit_rdpcm_enabled;
++        ppext->extended_precision_processing_flag      = sps->extended_precision_processing;
++        ppext->intra_smoothing_disabled_flag           = sps->intra_smoothing_disabled;
++        ppext->persistent_rice_adaptation_enabled_flag = sps->persistent_rice_adaptation_enabled;
++        ppext->high_precision_offsets_enabled_flag     = sps->high_precision_offsets_enabled;
++        ppext->cabac_bypass_alignment_enabled_flag     = sps->cabac_bypass_alignment_enabled;
 +    }
 +    if (pps->pps_range_extensions_flag) {
 +        ppext->cross_component_prediction_enabled_flag = pps->cross_component_prediction_enabled_flag;
@@ -141,7 +142,7 @@ index 31d74a7164..95e2d9a7d5 100644
  }
  
  void ff_dxva2_hevc_fill_scaling_lists(const AVCodecContext *avctx, AVDXVAContext *ctx, DXVA_Qmatrix_HEVC *qm)
-@@ -371,7 +401,7 @@ static int dxva2_hevc_start_frame(AVCodecContext *avctx,
+@@ -375,7 +405,7 @@ static int dxva2_hevc_start_frame(AVCodecContext *avctx,
      av_assert0(ctx_pic);
  
      /* Fill up DXVA_PicParams_HEVC */
@@ -150,9 +151,9 @@ index 31d74a7164..95e2d9a7d5 100644
  
      /* Fill up DXVA_Qmatrix_HEVC */
      ff_dxva2_hevc_fill_scaling_lists(avctx, ctx, &ctx_pic->qm);
-@@ -410,13 +440,15 @@ static int dxva2_hevc_end_frame(AVCodecContext *avctx)
+@@ -414,13 +444,15 @@ static int dxva2_hevc_end_frame(AVCodecContext *avctx)
      HEVCContext *h = avctx->priv_data;
-     struct hevc_dxva2_picture_context *ctx_pic = h->ref->hwaccel_picture_private;
+     struct hevc_dxva2_picture_context *ctx_pic = h->cur_frame->hwaccel_picture_private;
      int scale = ctx_pic->pp.dwCodingParamToolFlags & 1;
 +    int rext = avctx->profile == AV_PROFILE_HEVC_REXT;
      int ret;
@@ -160,7 +161,7 @@ index 31d74a7164..95e2d9a7d5 100644
      if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
          return -1;
  
-     ret = ff_dxva2_common_end_frame(avctx, h->ref->frame,
+     ret = ff_dxva2_common_end_frame(avctx, h->cur_frame->f,
 -                                    &ctx_pic->pp, sizeof(ctx_pic->pp),
 +                                    &ctx_pic->pp,
 +                                    rext ? sizeof(ctx_pic->ppext) : sizeof(ctx_pic->pp),
@@ -222,11 +223,11 @@ index 224a867ebc..076cb2f8f3 100644
  
  void ff_dxva2_hevc_fill_scaling_lists(const AVCodecContext *avctx, AVDXVAContext *ctx, DXVA_Qmatrix_HEVC *qm);
  
-diff --git a/libavcodec/hevcdec.c b/libavcodec/hevcdec.c
-index a130eb1d74..4c2f7cb2c9 100644
---- a/libavcodec/hevcdec.c
-+++ b/libavcodec/hevcdec.c
-@@ -465,6 +465,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+diff --git a/libavcodec/hevc/hevcdec.c b/libavcodec/hevc/hevcdec.c
+index 0dc24f82f8..d53c9d6ce1 100644
+--- a/libavcodec/hevc/hevcdec.c
++++ b/libavcodec/hevc/hevcdec.c
+@@ -591,6 +591,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
  #endif
          break;
      case AV_PIX_FMT_YUV444P:
@@ -237,7 +238,7 @@ index a130eb1d74..4c2f7cb2c9 100644
  #if CONFIG_HEVC_VAAPI_HWACCEL
          *fmt++ = AV_PIX_FMT_VAAPI;
  #endif
-@@ -483,6 +487,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+@@ -609,6 +613,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
          break;
      case AV_PIX_FMT_YUV422P:
      case AV_PIX_FMT_YUV422P10LE:
@@ -248,7 +249,7 @@ index a130eb1d74..4c2f7cb2c9 100644
  #if CONFIG_HEVC_VAAPI_HWACCEL
         *fmt++ = AV_PIX_FMT_VAAPI;
  #endif
-@@ -500,6 +508,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+@@ -626,6 +634,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
      /* NOTE: fallthrough */
      case AV_PIX_FMT_YUV420P12:
      case AV_PIX_FMT_YUV444P12:
@@ -259,7 +260,7 @@ index a130eb1d74..4c2f7cb2c9 100644
  #if CONFIG_HEVC_VAAPI_HWACCEL
         *fmt++ = AV_PIX_FMT_VAAPI;
  #endif
-@@ -514,6 +526,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+@@ -640,6 +652,10 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
  #endif
          break;
      case AV_PIX_FMT_YUV422P12:
@@ -271,5 +272,5 @@ index a130eb1d74..4c2f7cb2c9 100644
         *fmt++ = AV_PIX_FMT_VAAPI;
  #endif
 -- 
-2.44.0.windows.1
+2.43.0.windows.1
 

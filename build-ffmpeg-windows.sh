@@ -7,7 +7,6 @@ OUTDIR="$SCRIPTPATH/build/FFmpeg/build_$1"
 cd $SCRIPTPATH/FFmpeg
 
 # Apply our FFmpeg patches
-git apply ../patches/ffmpeg_nvidia_vkvideo_crash.patch
 git apply ../patches/ffmpeg_dxva_hevc_rext.patch
 
 if [ "$1" = "x64" ]; then
