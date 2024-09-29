@@ -30,7 +30,7 @@ before_build:
   - cmd: 'vulkan_sdk.exe --root %VULKAN_SDK% --accept-licenses --default-answer --confirm-command install'
 
 build_script:
-  - cmd: 'cmd /c build-detours.bat %MSBUILD_PLATFORM%'
+  - cmd: 'rem BROKEN Fails to link on x64: cmd /c build-detours.bat %MSBUILD_PLATFORM%'
   - 'mkdir build'
   - 'cd build'
   - 'mkdir SDL'
