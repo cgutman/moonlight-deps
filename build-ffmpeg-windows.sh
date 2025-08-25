@@ -13,7 +13,7 @@ if [ "$1" = "x64" ]; then
     # x64 uses yasm for assembly
     pacman --noconfirm -S yasm
 
-    TARGET_BUILD_ARGS="--arch=x86_64 --toolchain=msvc"
+    TARGET_BUILD_ARGS="--arch=x86_64 --toolchain=msvc --extra-ldflags=-cetcompat"
 elif [ "$1" = "arm64" ]; then
     # ARM64 uses gas-preprocessor.pl for assembly
     mkdir /tmp/gas

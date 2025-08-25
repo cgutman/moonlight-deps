@@ -5,6 +5,14 @@ rem This is preferable to RelWithDebInfo. See https://gitlab.kitware.com/cmake/c
 set CFLAGS=/O2 /DNDEBUG /Zi /Gy
 set LDFLAGS=/DEBUG:FULL /OPT:REF /OPT:ICF
 
+rem Enable security mitigations
+set CFLAGS=%CFLAGS% /guard:cf /guard:ehcont
+set CXXFLAGS=%CXXFLAGS% /guard:cf /guard:ehcont
+set LDFLAGS=%LDFLAGS% /guard:cf /guard:ehcont
+if /I "%1" NEQ "ARM64" (
+    set LDFLAGS=%LDFLAGS% /CETCOMPAT
+)
+
 rem Checkout vendored dependencies in the external folder
 pushd ..\..\SDL_ttf
 git submodule update --init
