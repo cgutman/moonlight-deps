@@ -25,6 +25,10 @@ fi
 
 mkdir $OUTDIR
 PKG_CONFIG_PATH="$OUTDIR/../../dav1d/install_$1/lib/pkgconfig" ./configure --prefix=$OUTDIR $TARGET_BUILD_ARGS $GENERIC_BUILD_ARGS
+if [ $? -ne 0 ]; then
+    cat ffbuild/config.log
+    exit 1
+fi
 make V=1 -j$(nproc)
 make install
 

@@ -1,0 +1,252 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows x64 Configuration
+          - os: windows-2025
+            sdk_version: 10.0.26100.0
+            msvc_compiler_tuple: amd64
+            msbuild_platform: x64
+            cmake_build_tuple: x64 x64
+            openssl_build_tuple: x64 VC-WIN64A
+            ffmpeg_build_tuple: x64
+            libplacebo_build_tuple: x64 CLANG64
+
+          # Windows ARM64 Configuration
+          - os: windows-11-arm
+            sdk_version: 10.0.26100.0
+            msvc_compiler_tuple: arm64
+            msbuild_platform: ARM64
+            cmake_build_tuple: arm64 ARM64
+            openssl_build_tuple: arm64 VC-WIN64-ARM
+            ffmpeg_build_tuple: arm64
+            libplacebo_build_tuple: arm64 CLANGARM64
+
+          # macOS Configuration
+          - os: macos-13
+            macos_min: '11.0'
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      MACOS_MIN: ${{ matrix.macos_min }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          fetch-depth: 1
+
+      - name: Setup Environment (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+          brew install nasm meson
+
+      - name: Setup Environment (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          choco install -y nasm jom
+          pip install meson
+
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.msvc_compiler_tuple }}
+          sdk: ${{ matrix.sdk_version }}
+
+      - name: Setup MSYS2 (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          path-type: inherit
+          update: true
+          install: >-
+            make
+            git
+
+      - name: Prepare Vulkan SDK (Windows)
+        if: runner.os == 'Windows'
+        uses: humbletim/setup-vulkan-sdk@v1.2.1
+        with:
+          vulkan-query-version: 1.4.321.1
+          vulkan-components: Vulkan-Headers
+          vulkan-use-cache: true
+
+      - name: Setup Build Directory
+        shell: bash
+        run: |
+          mkdir build
+          mkdir build/SDL
+          mkdir build/SDL_ttf
+          mkdir build/openssl
+          mkdir build/libplacebo
+          mkdir build/dav1d
+          mkdir build/FFmpeg
+          mkdir build/opus
+          mkdir build/discord-rpc
+
+      - name: Build Detours (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          build-detours.bat ${{ matrix.msbuild_platform }}
+
+      - name: Build SDL (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build/SDL
+        run: |
+          ..\\..\\build-sdl.bat ${{ matrix.cmake_build_tuple }}
+
+      - name: Build SDL (macOS)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build/SDL
+        run: |
+          ../../build-sdl.sh
+
+      - name: Build SDL_ttf (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build/SDL_ttf
+        run: |
+          ..\\..\\build-sdl-ttf.bat ${{ matrix.cmake_build_tuple }}
+
+      - name: Build OpenSSL (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build
+        run: |
+          ..\\build-openssl.bat ${{ matrix.openssl_build_tuple }}
+
+      - name: Build OpenSSL (macOS x86_64)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build
+        run: |
+          ../build-openssl.sh x64 darwin64-x86_64-cc
+
+      - name: Build OpenSSL (macOS arm64)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build
+        run: |
+          ../build-openssl.sh arm64 darwin64-arm64-cc
+
+      - name: Build libplacebo (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build
+        run: |
+          ..\\build-libplacebo-windows.bat ${{ matrix.libplacebo_build_tuple }}
+
+      - name: Build dav1d (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build/dav1d
+        run: |
+          ..\\..\\build-dav1d.bat ${{ matrix.ffmpeg_build_tuple }}
+
+      - name: Build dav1d (macOS)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build/dav1d
+        run: |
+          ../../build-dav1d.sh
+
+      - name: Build FFmpeg (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        working-directory: build
+        run: |
+          ../build-ffmpeg-windows.sh ${{ matrix.ffmpeg_build_tuple }}
+
+      - name: Build FFmpeg (macOS x86_64)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build
+        run: |
+          ../build-ffmpeg-macos.sh x64 x86_64
+
+      - name: Build FFmpeg (macOS arm64)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build
+        run: |
+          ../build-ffmpeg-macos.sh arm64 arm64
+
+      - name: Build opus (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build/opus
+        run: |
+          ..\\..\\build-opus.bat ${{ matrix.cmake_build_tuple }}
+
+      - name: Build opus (macOS x86_64)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build/opus
+        run: |
+          ../../build-opus.sh x64 x86_64
+
+      - name: Build opus (macOS arm64)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build/opus
+        run: |
+          ../../build-opus.sh arm64 arm64
+
+      - name: Build discord-rpc (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build/discord-rpc
+        run: |
+          ..\\..\\build-discord-rpc.bat ${{ matrix.cmake_build_tuple }}
+
+      - name: Build discord-rpc (macOS x86_64)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build/discord-rpc
+        run: |
+          ../../build-discord-rpc.sh x64 x86_64
+
+      - name: Build discord-rpc (macOS arm64)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build/discord-rpc
+        run: |
+          ../../build-discord-rpc.sh arm64 arm64
+
+      - name: Archive Build Artifacts (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          archive.bat ${{ matrix.msbuild_platform }}
+
+      - name: Archive Build Artifacts (macOS)
+        if: runner.os == 'macos'
+        shell: bash
+        run: |
+          ./archive.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}-${{ matrix.msbuild_platform || 'universal' }}
+          path: |
+            windows-*.zip
+            macos.zip
+          if-no-files-found: error

@@ -1,2 +1,0 @@
-call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %2
-C:\msys64\usr\bin\env.exe MSYSTEM=MSYS2 C:\msys64\usr\bin\bash -l /c/projects/moonlight-deps/build-ffmpeg-windows.sh %1

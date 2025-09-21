@@ -3,11 +3,10 @@ set PATH=C:\Strawberry\perl\bin;%ProgramFiles%\NASM;%PATH%
 
 cd ..\openssl
 
-rem Build OpenSSL
-call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %2
+rem Build OpenSSL (/FS is a CL.exe argument to avoid PDB concurrency issues with jom)
 mkdir ..\build\openssl\build_%1
-perl Configure --prefix=%CD%\..\build\openssl\build_%1 --openssldir=%CD%\..\build\openssl\build_%1 %3 no-tests no-engine no-apps no-legacy no-dso
-nmake
+perl Configure --prefix=%CD%\..\build\openssl\build_%1 --openssldir=%CD%\..\build\openssl\build_%1 %2 no-tests no-engine no-apps no-legacy no-dso /FS
+jom
 nmake install_sw
 
 rem Clean up in-tree build
