@@ -7,6 +7,6 @@ set LDFLAGS=/DEBUG:FULL /OPT:REF /OPT:ICF
 
 mkdir build_%1
 cd build_%1
-cmake %CMAKE_ARGS% -DBUILD_SHARED_LIBS=ON -A %2 %REPO_PATH%
+cmake %CMAKE_ARGS% -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DBUILD_SHARED_LIBS=ON -A %2 %REPO_PATH%
 cmake --build . --config Release -v
 cd ..
