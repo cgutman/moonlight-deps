@@ -32,8 +32,8 @@ jobs:
             libplacebo_build_tuple: arm64 CLANGARM64
 
           # macOS Configuration
-          - os: macos-13
-            macos_min: '11.0'
+          - os: macos-15
+            macos_min: '12.0'
 
     runs-on: ${{ matrix.os }}
 
