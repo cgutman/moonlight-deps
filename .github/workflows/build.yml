@@ -19,7 +19,7 @@ jobs:
             cmake_build_tuple: x64 x64
             openssl_build_tuple: x64 VC-WIN64A
             ffmpeg_build_tuple: x64
-            libplacebo_build_tuple: x64 CLANG64
+            libplacebo_build_tuple: x64
 
           # Windows ARM64 Configuration
           - os: windows-11-arm
@@ -29,7 +29,7 @@ jobs:
             cmake_build_tuple: arm64 ARM64
             openssl_build_tuple: arm64 VC-WIN64-ARM
             ffmpeg_build_tuple: arm64
-            libplacebo_build_tuple: arm64 CLANGARM64
+            libplacebo_build_tuple: arm64
 
           # macOS Configuration
           - os: macos-15
@@ -58,7 +58,7 @@ jobs:
         shell: cmd
         run: |
           choco install -y nasm jom
-          pip install meson
+          pip install meson ninja
 
       - name: Setup MSVC (Windows)
         if: runner.os == 'Windows'
@@ -77,13 +77,12 @@ jobs:
             make
             git
 
-      - name: Prepare Vulkan SDK (Windows)
+      - name: Install Vulkan SDK (Windows)
         if: runner.os == 'Windows'
-        uses: humbletim/setup-vulkan-sdk@v1.2.1
+        uses: cgutman/install-vulkan-sdk@warm_qt
         with:
-          vulkan-query-version: 1.4.321.1
-          vulkan-components: Vulkan-Headers
-          vulkan-use-cache: true
+          version: 1.4.321.1
+          cache: true
 
       - name: Setup Build Directory
         shell: bash
@@ -149,7 +148,7 @@ jobs:
       - name: Build libplacebo (Windows)
         if: runner.os == 'Windows'
         shell: cmd
-        working-directory: build
+        working-directory: libplacebo
         run: |
           ..\\build-libplacebo-windows.bat ${{ matrix.libplacebo_build_tuple }}
 
