@@ -58,7 +58,7 @@ jobs:
         shell: cmd
         run: |
           choco install -y nasm jom
-          pip install meson
+          pip install meson ninja
 
       - name: Setup MSVC (Windows)
         if: runner.os == 'Windows'
@@ -79,11 +79,10 @@ jobs:
 
       - name: Prepare Vulkan SDK (Windows)
         if: runner.os == 'Windows'
-        uses: humbletim/setup-vulkan-sdk@v1.2.1
+        uses: humbletim/install-vulkan-sdk@v1.2
         with:
-          vulkan-query-version: 1.4.321.1
-          vulkan-components: Vulkan-Headers
-          vulkan-use-cache: true
+          version: 1.4.321.1
+          cache: true
 
       - name: Setup Build Directory
         shell: bash
@@ -98,58 +97,10 @@ jobs:
           mkdir build/opus
           mkdir build/discord-rpc
 
-      - name: Build Detours (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          build-detours.bat ${{ matrix.msbuild_platform }}
-
-      - name: Build SDL (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: build/SDL
-        run: |
-          ..\\..\\build-sdl.bat ${{ matrix.cmake_build_tuple }}
-
-      - name: Build SDL (macOS)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build/SDL
-        run: |
-          ../../build-sdl.sh
-
-      - name: Build SDL_ttf (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: build/SDL_ttf
-        run: |
-          ..\\..\\build-sdl-ttf.bat ${{ matrix.cmake_build_tuple }}
-
-      - name: Build OpenSSL (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: build
-        run: |
-          ..\\build-openssl.bat ${{ matrix.openssl_build_tuple }}
-
-      - name: Build OpenSSL (macOS x86_64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build
-        run: |
-          ../build-openssl.sh x64 darwin64-x86_64-cc
-
-      - name: Build OpenSSL (macOS arm64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build
-        run: |
-          ../build-openssl.sh arm64 darwin64-arm64-cc
-
       - name: Build libplacebo (Windows)
         if: runner.os == 'Windows'
         shell: cmd
-        working-directory: build
+        working-directory: libplacebo
         run: |
           ..\\build-libplacebo-windows.bat ${{ matrix.libplacebo_build_tuple }}
 
