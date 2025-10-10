@@ -11,7 +11,7 @@
 [submodule "openssl"]
 	path = openssl
 	url = https://github.com/openssl/openssl.git
-	branch = openssl-3.5
+	branch = openssl-3.6
 [submodule "SDL"]
 	path = SDL
 	url = https://github.com/libsdl-org/SDL.git
