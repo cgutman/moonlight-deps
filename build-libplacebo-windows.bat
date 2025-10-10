@@ -14,6 +14,14 @@ rem Add the Vulkan SDK to the library and include path
 set "LIB=%LIB%;%VULKAN_SDK%\Lib"
 set "INCLUDE=%INCLUDE%;%VULKAN_SDK%\Include"
 
+rem Enable security mitigations
+set CFLAGS=%CFLAGS% /guard:cf /guard:ehcont
+set CXXFLAGS=%CXXFLAGS% /guard:cf /guard:ehcont
+set LDFLAGS=%LDFLAGS% /guard:cf /guard:ehcont
+if /I "%1" NEQ "ARM64" (
+    set LDFLAGS=%LDFLAGS% /CETCOMPAT
+)
+
 meson setup --prefix=%OUTDIR% -Ddefault_library=shared -Dbuildtype=debugoptimized -Ddemos=false -Dtests=false -Dopengl=disabled -Dd3d11=disabled -Dvulkan=enabled -Dvk-proc-addr=disabled -Dxxhash=disabled -Dshaderc=enabled build
 ninja -C build
 ninja -C build install
