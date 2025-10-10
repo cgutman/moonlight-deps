@@ -33,7 +33,7 @@ jobs:
 
           # macOS Configuration
           - os: macos-15
-            macos_min: '12.0'
+            macos_min: '13.0'
 
     runs-on: ${{ matrix.os }}
 
