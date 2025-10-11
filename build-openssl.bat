@@ -3,6 +3,9 @@ set PATH=C:\Strawberry\perl\bin;%ProgramFiles%\NASM;%PATH%
 
 cd ..\openssl
 
+rem LDFLAGS overrides the defaults, so we must include them too
+set LDFLAGS=/nologo /debug
+
 rem Enable security mitigations
 if /I "%1" NEQ "ARM64" (
     set LDFLAGS=%LDFLAGS% /CETCOMPAT
