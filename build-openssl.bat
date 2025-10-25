@@ -3,6 +3,9 @@ set PATH=C:\Strawberry\perl\bin;%PATH%
 
 cd ..\openssl
 
+rem Apply the multilib patch
+git apply ..\patches\openssl_masm_multilib.patch
+
 rem CFLAGS/ASFLAGS/LDFLAGS overrides the defaults, so we must include them too
 set CFLAGS_OVR=/W3 /wd4090 /nologo
 set ASFLAGS_OVR=/nologo /Zi
