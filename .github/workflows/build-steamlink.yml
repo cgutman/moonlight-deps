@@ -1,0 +1,45 @@
+name: Build Steam Link
+
+on:
+  push:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    env:
+      OPUS_VERSION: 1.5.2
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          submodules: 'recursive'
+          fetch-depth: 1
+
+      - name: Checkout Steam Link SDK
+        uses: actions/checkout@v5
+        with:
+          repository: ValveSoftware/steamlink-sdk
+          path: steamlink-sdk
+          fetch-depth: 1
+
+      - name: Build opus
+        shell: bash
+        run: |
+          STEAMLINK_SDK_PATH=$PWD/steamlink-sdk ./build-opus-steamlink.sh
+
+      - name: Archive Build Artifacts
+        shell: bash
+        run: |
+          ./archive-steamlink.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: steamlink
+          path: |
+            steamlink.zip
+          if-no-files-found: error

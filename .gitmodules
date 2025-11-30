@@ -32,3 +32,6 @@
 [submodule "Vulkan-Headers"]
 	path = Vulkan-Headers
 	url = https://github.com/KhronosGroup/Vulkan-Headers.git
+[submodule "Ne10"]
+	path = Ne10
+	url = https://github.com/projectNe10/Ne10.git
