@@ -89,6 +89,7 @@ jobs:
         run: |
           mkdir build
           mkdir build/SDL
+          mkdir build/sdl2-compat
           mkdir build/SDL_ttf
           mkdir build/openssl
           mkdir build/libplacebo
@@ -117,12 +118,33 @@ jobs:
         run: |
           ../../build-sdl.sh
 
+      - name: Build sdl2-compat (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build/sdl2-compat
+        run: |
+          ..\\..\\build-sdl2-compat.bat ${{ matrix.cmake_build_tuple }}
+
+      - name: Build sdl2-compat (macOS)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build/sdl2-compat
+        run: |
+          ../../build-sdl2-compat.sh
+
       - name: Build SDL_ttf (Windows)
         if: runner.os == 'Windows'
         shell: cmd
         working-directory: build/SDL_ttf
         run: |
           ..\\..\\build-sdl-ttf.bat ${{ matrix.cmake_build_tuple }}
+
+      - name: Build SDL_ttf (macOS)
+        if: runner.os == 'macos'
+        shell: bash
+        working-directory: build/SDL_ttf
+        run: |
+          ../../build-sdl-ttf.sh
 
       - name: Build OpenSSL (Windows)
         if: runner.os == 'Windows'

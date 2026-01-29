@@ -1,4 +1,4 @@
-set REPO_PATH=..\..\..\SDL_ttf
+set REPO_PATH=..\..\..\sdl2-compat
 
 rem Set linker flags to produce PDB with Release build type
 rem This is preferable to RelWithDebInfo. See https://gitlab.kitware.com/cmake/cmake/-/issues/20812
@@ -13,15 +13,10 @@ if /I "%1" NEQ "ARM64" (
     set LDFLAGS=%LDFLAGS% /CETCOMPAT
 )
 
-rem Checkout vendored dependencies in the external folder
-pushd ..\..\SDL_ttf
-git submodule update --init
-popd
-
 mkdir build_%1
 cd build_%1
-set CMAKE_PREFIX_PATH=..\..\sdl2-compat\install_%1
-cmake %CMAKE_ARGS% -DSDL2TTF_SAMPLES=OFF -DSDL2TTF_VENDORED=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -A %2 %REPO_PATH%
+set CMAKE_PREFIX_PATH=..\..\SDL\install_%1
+cmake %CMAKE_ARGS% -DSDL2COMPAT_TESTS=OFF -DSDL2COMPAT_LIBC=ON -A %2 %REPO_PATH%
 cmake --build . --config Release -v
 cmake --install . --prefix ..\install_%1 --config Release -v
 cd ..

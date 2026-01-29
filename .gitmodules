@@ -35,3 +35,6 @@
 [submodule "Ne10"]
 	path = Ne10
 	url = https://github.com/projectNe10/Ne10.git
+[submodule "sdl2-compat"]
+	path = sdl2-compat
+	url = https://github.com/libsdl-org/sdl2-compat.git
