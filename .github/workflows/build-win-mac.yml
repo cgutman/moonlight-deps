@@ -32,7 +32,7 @@ jobs:
             libplacebo_build_tuple: arm64
 
           # macOS Configuration
-          - os: macos-15
+          - os: macos-26
             macos_min: '13.0'
 
     runs-on: ${{ matrix.os }}
