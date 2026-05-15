@@ -1,1 +1,5 @@
-msbuild /p:Platform=%1 /p:Configuration=ReleaseMD Detours\vc\Detours.sln
+set DETOURS_TARGET_PROCESSOR=%1
+
+pushd Detours\src
+nmake
+popd
