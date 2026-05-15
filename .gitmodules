@@ -15,7 +15,7 @@
 [submodule "SDL"]
 	path = SDL
 	url = https://github.com/libsdl-org/SDL.git
-	branch = main
+	branch = release-3.4.x
 [submodule "Detours"]
 	path = Detours
 	url = https://github.com/microsoft/Detours.git
