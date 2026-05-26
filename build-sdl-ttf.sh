@@ -9,6 +9,7 @@ cmake -DSDL2TTF_VENDORED=ON -DSDL2TTF_SAMPLES=OFF \
       -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
       -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOS_MIN \
       -DCMAKE_OSX_ARCHITECTURES='arm64;x86_64' \
+      -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
       ../../../SDL_ttf/
 cmake --build . --config Release -v
 cmake --install . --config Release --prefix ../install -v

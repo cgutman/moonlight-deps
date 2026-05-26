@@ -7,6 +7,7 @@ export CMAKE_PREFIX_PATH=../../SDL/install
 cmake -DSDL2COMPAT_TESTS=OFF -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOS_MIN \
       -DCMAKE_OSX_ARCHITECTURES='arm64;x86_64' \
+      -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
       ../../../sdl2-compat/
 cmake --build . --config Release -v
 cmake --install . --config Release --prefix ../install -v

@@ -6,6 +6,7 @@ cd build
 cmake -DSDL_INSTALL_DOCS=OFF -DSDL_TEST_LIBRARY=OFF -DSDL_HIDAPI_LIBUSB=OFF \
       -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOS_MIN \
       -DCMAKE_OSX_ARCHITECTURES='arm64;x86_64' -DCMAKE_OBJC_FLAGS="-DSDL_MAC_NO_SANDBOX=1" \
+      -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
       ../../../SDL/
 cmake --build . --config Release -v -j
 cmake --install . --config Release --prefix ../install -v
