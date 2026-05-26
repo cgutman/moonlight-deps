@@ -2,9 +2,9 @@ set REPO_PATH=..\..\..\opus
 
 rem Set linker flags to produce PDB with Release build type
 rem This is preferable to RelWithDebInfo. See https://gitlab.kitware.com/cmake/cmake/-/issues/20812
-set CFLAGS=/O2 /DNDEBUG /Zi /Gy
-set CXXFLAGS=/O2 /DNDEBUG /Zi /Gy
-set LDFLAGS=/DEBUG:FULL /OPT:REF /OPT:ICF
+set CFLAGS=/O2 /DNDEBUG /Zi /Gy /GL
+set CXXFLAGS=/O2 /DNDEBUG /Zi /Gy /GL
+set LDFLAGS=/DEBUG:FULL /OPT:REF /OPT:ICF /LTCG
 
 rem Enable security mitigations
 set CFLAGS=%CFLAGS% /guard:cf /guard:ehcont
