@@ -7,7 +7,7 @@ set PATH=%ProgramFiles%\NASM;%PATH%
 
 rem ARM64 uses gas-preprocessor.pl for assembly
 mkdir %TEMP%\gas
-curl https://raw.githubusercontent.com/FFmpeg/gas-preprocessor/master/gas-preprocessor.pl -o %TEMP%\gas\gas-preprocessor.pl
+curl https://raw.githubusercontent.com/FFmpeg/gas-preprocessor/master/gas-preprocessor.pl -o %TEMP%\gas\gas-preprocessor.pl || exit /b 1
 set PATH=%TEMP%\gas;%PATH%
 
 rem Enable security mitigations
@@ -19,8 +19,8 @@ if /I "%1" NEQ "ARM64" (
 )
 
 mkdir build_%1
-cd build_%1
-meson setup %REPO_PATH% --prefix=%CD%\..\install_%1 %COMMON_OPTIONS%
-meson compile
-meson install
+cd build_%1 || exit /b 1
+meson setup %REPO_PATH% --prefix=%CD%\..\install_%1 %COMMON_OPTIONS% || exit /b 1
+meson compile || exit /b 1
+meson install || exit /b 1
 cd ..

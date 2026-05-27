@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 source $STEAMLINK_SDK_PATH/setenv.sh
 
 # Build Ne10 static library first

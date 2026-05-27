@@ -1,10 +1,10 @@
 rem Add Strawberry Perl to PATH (Git's Perl won't work)
 set PATH=C:\Strawberry\perl\bin;%PATH%
 
-cd ..\openssl
+cd ..\openssl || exit /b 1
 
 rem Apply the multilib patch
-git apply ..\patches\openssl_masm_multilib.patch
+git apply ..\patches\openssl_masm_multilib.patch || exit /b 1
 
 rem CFLAGS/ASFLAGS/LDFLAGS overrides the defaults, so we must include them too
 set CFLAGS_OVR=/W3 /wd4090 /nologo
@@ -24,10 +24,10 @@ if /I "%1" NEQ "ARM64" (
 
 rem Build OpenSSL
 mkdir ..\build\openssl\build_%1
-perl Configure CFLAGS="%CFLAGS_OVR%" ASFLAGS="%ASFLAGS_OVR%" LDFLAGS="%LDFLAGS_OVR%" --prefix=%CD%\..\build\openssl\build_%1 --openssldir=%CD%\..\build\openssl\build_%1 %2 no-tests no-engine no-apps no-legacy no-dso
-jom
-nmake install_sw
+perl Configure CFLAGS="%CFLAGS_OVR%" ASFLAGS="%ASFLAGS_OVR%" LDFLAGS="%LDFLAGS_OVR%" --prefix=%CD%\..\build\openssl\build_%1 --openssldir=%CD%\..\build\openssl\build_%1 %2 no-tests no-engine no-apps no-legacy no-dso || exit /b 1
+jom || exit /b 1
+nmake install_sw || exit /b 1
 
 rem Clean up in-tree build
-git reset --hard
-git clean -f -d -x -e NUL
+git reset --hard || exit /b 1
+git clean -f -d -x -e NUL || exit /b 1

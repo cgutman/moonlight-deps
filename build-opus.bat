@@ -15,7 +15,7 @@ if /I "%1" NEQ "ARM64" (
 )
 
 mkdir build_%1
-cd build_%1
-cmake %CMAKE_ARGS% -DOPUS_BUILD_SHARED_LIBRARY=ON -A %2 %REPO_PATH%
-cmake --build . --config Release -v
+cd build_%1 || exit /b 1
+cmake %CMAKE_ARGS% -DOPUS_BUILD_SHARED_LIBRARY=ON -A %2 %REPO_PATH% || exit /b 1
+cmake --build . --config Release -v || exit /b 1
 cd ..

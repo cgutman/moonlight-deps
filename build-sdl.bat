@@ -15,8 +15,8 @@ if /I "%1" NEQ "ARM64" (
 )
 
 mkdir build_%1
-cd build_%1
-cmake %CMAKE_ARGS% -DSDL_LIBC=ON -DSDL_INSTALL_DOCS=OFF -DSDL_TEST_LIBRARY=OFF -A %2 %REPO_PATH%
-cmake --build . --config Release -v -j
-cmake --install . --prefix ..\install_%1 --config Release -v
+cd build_%1 || exit /b 1
+cmake %CMAKE_ARGS% -DSDL_LIBC=ON -DSDL_INSTALL_DOCS=OFF -DSDL_TEST_LIBRARY=OFF -A %2 %REPO_PATH% || exit /b 1
+cmake --build . --config Release -v -j || exit /b 1
+cmake --install . --prefix ..\install_%1 --config Release -v || exit /b 1
 cd ..

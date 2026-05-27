@@ -15,9 +15,9 @@ if /I "%1" NEQ "ARM64" (
 )
 
 mkdir build_%1
-cd build_%1
+cd build_%1 || exit /b 1
 set CMAKE_PREFIX_PATH=..\..\SDL\install_%1
-cmake %CMAKE_ARGS% -DSDL2COMPAT_TESTS=OFF -DSDL2COMPAT_LIBC=ON -A %2 %REPO_PATH%
-cmake --build . --config Release -v
-cmake --install . --prefix ..\install_%1 --config Release -v
+cmake %CMAKE_ARGS% -DSDL2COMPAT_TESTS=OFF -DSDL2COMPAT_LIBC=ON -A %2 %REPO_PATH% || exit /b 1
+cmake --build . --config Release -v || exit /b 1
+cmake --install . --prefix ..\install_%1 --config Release -v || exit /b 1
 cd ..
