@@ -16,17 +16,19 @@ else
   exit 1
 fi
 
+export MACOSX_DEPLOYMENT_TARGET=$MACOS_MIN
+
 # Build dav1d for x64
 mkdir build_x64
 pushd build_x64
-CFLAGS="-arch x86_64 -mmacosx-version-min=$MACOS_MIN" LDFLAGS="-arch x86_64 -mmacosx-version-min=$MACOS_MIN" meson setup ../../../dav1d $X64_OPTIONS $COMMON_OPTIONS
+meson setup ../../../dav1d $X64_OPTIONS $COMMON_OPTIONS
 meson compile
 popd
 
 # Build dav1d for arm64
 mkdir build_arm64
 pushd build_arm64
-CFLAGS="-arch arm64 -mmacosx-version-min=$MACOS_MIN" LDFLAGS="-arch arm64 -mmacosx-version-min=$MACOS_MIN" meson setup ../../../dav1d $ARM64_OPTIONS $COMMON_OPTIONS
+meson setup ../../../dav1d $ARM64_OPTIONS $COMMON_OPTIONS
 meson compile
 popd
 
