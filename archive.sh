@@ -5,6 +5,8 @@ mkdir output
 mkdir output/include
 mkdir output/lib
 
+cp -R Vulkan-Headers/include/* output/include
+
 cp opus/include/*.h output/include
 cp discord-rpc/include/*.h output/include
 cp -R build/openssl/build_x64/include/* output/include
@@ -24,5 +26,8 @@ lipo build/openssl/build_*/lib/libcrypto.3.dylib -create -o output/lib/libcrypto
 lipo build/FFmpeg/build_*/lib/libavcodec.62.dylib -create -o output/lib/libavcodec.62.dylib
 lipo build/FFmpeg/build_*/lib/libavutil.60.dylib -create -o output/lib/libavutil.60.dylib
 lipo build/FFmpeg/build_*/lib/libswscale.9.dylib -create -o output/lib/libswscale.9.dylib
+
+# Collect MoltenVK driver from the Vulkan SDK
+cp $VULKAN_SDK/lib/libMoltenVK.dylib output/lib/libMoltenVK.dylib
 
 lipo -info output/lib/*

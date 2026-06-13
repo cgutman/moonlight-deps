@@ -52,7 +52,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
-          brew install nasm meson
+          brew install nasm meson pkg-config
 
       - name: Setup Environment (Windows)
         if: runner.os == 'Windows'
@@ -78,11 +78,10 @@ jobs:
             make
             git
 
-      - name: Install Vulkan SDK (Windows)
-        if: runner.os == 'Windows'
+      - name: Install Vulkan SDK
         uses: cgutman/install-vulkan-sdk@warm_qt
         with:
-          version: 1.4.321.1
+          version: 1.4.350.0
           cache: true
 
       - name: Setup Build Directory
