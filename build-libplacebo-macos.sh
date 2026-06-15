@@ -35,3 +35,6 @@ meson compile -C build
 meson install -C build
 git reset --hard
 git clean -f -d -x
+
+install_name_tool -id @rpath/libplacebo.dylib ../build/libplacebo/build_x64/lib/libplacebo.dylib
+install_name_tool -id @rpath/libplacebo.dylib ../build/libplacebo/build_arm64/lib/libplacebo.dylib

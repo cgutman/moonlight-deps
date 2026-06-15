@@ -27,7 +27,7 @@ lipo build/openssl/build_*/lib/libcrypto.3.dylib -create -o output/lib/libcrypto
 lipo build/FFmpeg/build_*/lib/libavcodec.62.dylib -create -o output/lib/libavcodec.62.dylib
 lipo build/FFmpeg/build_*/lib/libavutil.60.dylib -create -o output/lib/libavutil.60.dylib
 lipo build/FFmpeg/build_*/lib/libswscale.9.dylib -create -o output/lib/libswscale.9.dylib
-lipo build/libplacebo/build_*/lib/libplacebo.365.dylib -create -o output/lib/libplacebo.365.dylib
+lipo build/libplacebo/build_*/lib/libplacebo.dylib -create -o output/lib/libplacebo.dylib
 
 # Collect MoltenVK driver from the Vulkan SDK
 cp $VULKAN_SDK/lib/libMoltenVK.dylib output/lib/libMoltenVK.dylib
