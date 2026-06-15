@@ -20,6 +20,7 @@ export LIBRARY_PATH=$VULKAN_SDK/lib:$LIBRARY_PATH
 
 # Build libplacebo for x64
 git apply ../patches/libplacebo_shaderc_win.patch
+git apply ../patches/libplacebo_inherit_alpha.patch
 meson setup --prefix=$(pwd)/../build/libplacebo/build_x64 $X64_OPTIONS $COMMON_OPTIONS build
 meson compile -C build
 meson install -C build
@@ -28,6 +29,7 @@ git clean -f -d -x
 
 # Build libplacebo for arm64
 git apply ../patches/libplacebo_shaderc_win.patch
+git apply ../patches/libplacebo_inherit_alpha.patch
 meson setup --prefix=$(pwd)/../build/libplacebo/build_arm64 $ARM64_OPTIONS $COMMON_OPTIONS build
 meson compile -C build
 meson install -C build

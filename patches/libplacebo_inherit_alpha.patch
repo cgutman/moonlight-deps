@@ -1,0 +1,22 @@
+commit f10f07d4f80514c6256100d09a5fd63248cef14e
+Author: Cameron Gutman <aicommander@gmail.com>
+Date:   Sun Jun 14 20:49:05 2026 -0500
+
+    Prefer inherited alpha for macOS direct-to-display mode
+
+diff --git a/src/vulkan/swapchain.c b/src/vulkan/swapchain.c
+index 90f5da31..a09c5f84 100644
+--- a/src/vulkan/swapchain.c
++++ b/src/vulkan/swapchain.c
+@@ -588,10 +588,10 @@ caps_ready:
+     static const struct { VkCompositeAlphaFlagsKHR vk_mode;
+                           enum pl_alpha_mode pl_mode;
+                         } alphaModes[] = {
++        {VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,         PL_ALPHA_UNKNOWN},
+         {VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR, PL_ALPHA_INDEPENDENT},
+         {VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,  PL_ALPHA_PREMULTIPLIED},
+         {VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,          PL_ALPHA_UNKNOWN},
+-        {VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,         PL_ALPHA_UNKNOWN},
+     };
+ 
+     for (int i = 0; i < PL_ARRAY_SIZE(alphaModes); i++) {
