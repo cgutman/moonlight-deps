@@ -22,7 +22,7 @@ jobs:
             libplacebo_build_tuple: x64
 
           # Windows ARM64 Configuration
-          - os: windows-11-arm
+          - os: windows-11-vs2026-arm
             sdk_version: 10.0.26100.0
             msvc_compiler_tuple: arm64
             msbuild_platform: ARM64
