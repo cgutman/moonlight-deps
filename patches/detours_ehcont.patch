@@ -1,0 +1,13 @@
+diff --git a/src/Makefile b/src/Makefile
+index 413b30b..85e4a7e 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -24,6 +24,8 @@ CFLAGS=$(CFLAGS) /FR
+ CFLAGS=$(CFLAGS) /DWIN32_LEAN_AND_MEAN /D_WIN32_WINNT=0x501
+ !ENDIF
+ 
++CFLAGS=$(CFLAGS) /guard:ehcont
++
+ !IF "$(DETOURS_TARGET_PROCESSOR)" == "IA64"
+ CFLAGS=$(CFLAGS) /wd4163 # intrinsic rdtebex not available; using newer Windows headers with older compiler
+ !ENDIF
