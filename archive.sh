@@ -24,10 +24,12 @@ lipo build/opus/build_*/libopus.0.dylib -create -o output/lib/libopus.0.dylib
 lipo build/discord-rpc/build_*/src/libdiscord-rpc.dylib -create -o output/lib/libdiscord-rpc.dylib
 lipo build/openssl/build_*/lib/libssl.3.dylib -create -o output/lib/libssl.3.dylib
 lipo build/openssl/build_*/lib/libcrypto.3.dylib -create -o output/lib/libcrypto.3.dylib
-lipo build/FFmpeg/build_*/lib/libavcodec.62.dylib -create -o output/lib/libavcodec.62.dylib
-lipo build/FFmpeg/build_*/lib/libavutil.60.dylib -create -o output/lib/libavutil.60.dylib
-lipo build/FFmpeg/build_*/lib/libswscale.9.dylib -create -o output/lib/libswscale.9.dylib
 lipo build/libplacebo/build_*/lib/libplacebo.dylib -create -o output/lib/libplacebo.dylib
+
+for lib in libavcodec libavutil libswscale; do
+    dylib_name=$(basename "$(ls build/FFmpeg/build_*/lib/${lib}.*.dylib 2>/dev/null | head -n 1)")
+    lipo build/FFmpeg/build_*/lib/"$dylib_name" -create -o "output/lib/$dylib_name"
+done
 
 # Collect MoltenVK driver from the Vulkan SDK
 cp $VULKAN_SDK/lib/libMoltenVK.dylib output/lib/libMoltenVK.dylib
