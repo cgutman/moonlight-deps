@@ -27,7 +27,7 @@ lipo build/openssl/build_*/lib/libcrypto.3.dylib -create -o output/lib/libcrypto
 lipo build/libplacebo/build_*/lib/libplacebo.dylib -create -o output/lib/libplacebo.dylib
 
 for lib in libavcodec libavutil libswscale; do
-    dylib_name=$(basename "$(ls build/FFmpeg/build_*/lib/${lib}.*.dylib 2>/dev/null | head -n 1)")
+    dylib_name=$(ls build/FFmpeg/build_*/lib/${lib}.*.dylib 2>/dev/null | xargs -n1 basename | grep -E "^${lib}\.[0-9]+\.dylib$" | head -n 1)
     lipo build/FFmpeg/build_*/lib/"$dylib_name" -create -o "output/lib/$dylib_name"
 done
 
