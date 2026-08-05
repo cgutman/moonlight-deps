@@ -1,4 +1,4 @@
-From f961c57a3ae3ca60408301ff576418a6a04c3417 Mon Sep 17 00:00:00 2001
+From 84fd3cea491498f4c2520f55d793e24732e99ca5 Mon Sep 17 00:00:00 2001
 From: Cameron Gutman <aicommander@gmail.com>
 Date: Sun, 24 Aug 2025 21:23:34 -0500
 Subject: [PATCH] avcodec/dxva2: add support for HEVC RExt DXVA profiles
@@ -25,10 +25,10 @@ Signed-off-by: Cameron Gutman <aicommander@gmail.com>
  6 files changed, 264 insertions(+), 20 deletions(-)
 
 diff --git a/libavcodec/Makefile b/libavcodec/Makefile
-index 3d036de4b6..45231fbc24 100644
+index 95ba308504..c9ac18192a 100644
 --- a/libavcodec/Makefile
 +++ b/libavcodec/Makefile
-@@ -1047,9 +1047,9 @@ OBJS-$(CONFIG_H264_VAAPI_HWACCEL)         += vaapi_h264.o
+@@ -1065,9 +1065,9 @@ OBJS-$(CONFIG_H264_VAAPI_HWACCEL)         += vaapi_h264.o
  OBJS-$(CONFIG_H264_VDPAU_HWACCEL)         += vdpau_h264.o
  OBJS-$(CONFIG_H264_VIDEOTOOLBOX_HWACCEL)  += videotoolbox.o
  OBJS-$(CONFIG_H264_VULKAN_HWACCEL)        += vulkan_decode.o vulkan_h264.o
@@ -42,7 +42,7 @@ index 3d036de4b6..45231fbc24 100644
  OBJS-$(CONFIG_HEVC_QSV_HWACCEL)           += qsvdec.o
  OBJS-$(CONFIG_HEVC_VAAPI_HWACCEL)         += vaapi_hevc.o h265_profile_level.o
 diff --git a/libavcodec/d3d12va_hevc.c b/libavcodec/d3d12va_hevc.c
-index e72d49b7d9..13adc5f443 100644
+index 1bf1faf9cb..c8ccd2fbca 100644
 --- a/libavcodec/d3d12va_hevc.c
 +++ b/libavcodec/d3d12va_hevc.c
 @@ -33,7 +33,10 @@
@@ -66,7 +66,7 @@ index e72d49b7d9..13adc5f443 100644
  
      ff_dxva2_hevc_fill_scaling_lists(avctx, (AVDXVAContext *)ctx, &ctx_pic->qm);
  
-@@ -155,11 +158,13 @@ static int d3d12va_hevc_end_frame(AVCodecContext *avctx)
+@@ -165,11 +168,13 @@ static int d3d12va_hevc_end_frame(AVCodecContext *avctx)
      HEVCDecodePictureContext *ctx_pic = h->cur_frame->hwaccel_picture_private;
  
      int scale = ctx_pic->pp.dwCodingParamToolFlags & 1;
@@ -82,7 +82,7 @@ index e72d49b7d9..13adc5f443 100644
  }
  
 diff --git a/libavcodec/dxva2.c b/libavcodec/dxva2.c
-index 22ecd5acaf..ed6036e099 100644
+index a282e6c0c7..217d63dce1 100644
 --- a/libavcodec/dxva2.c
 +++ b/libavcodec/dxva2.c
 @@ -48,7 +48,6 @@ DEFINE_GUID(ff_DXVA2_ModeVP9_VLD_Profile0,0x463707f8,0xa1d0,0x4585,0x87,0x6d,0x8
@@ -479,10 +479,10 @@ index 6cbd0e42d7..4d5656e09b 100644
  
  #if CONFIG_VP9_D3D12VA_HWACCEL || CONFIG_VP9_D3D11VA_HWACCEL || CONFIG_VP9_D3D11VA2_HWACCEL || CONFIG_VP9_DXVA2_HWACCEL
 diff --git a/libavcodec/hevc/hevcdec.c b/libavcodec/hevc/hevcdec.c
-index d3e5e58cfc..d127523c8b 100644
+index 18e22f697e..a33e9f2e69 100644
 --- a/libavcodec/hevc/hevcdec.c
 +++ b/libavcodec/hevc/hevcdec.c
-@@ -647,6 +647,13 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+@@ -634,6 +634,13 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
  #endif
          break;
      case AV_PIX_FMT_YUV444P:
@@ -496,7 +496,7 @@ index d3e5e58cfc..d127523c8b 100644
  #if CONFIG_HEVC_VAAPI_HWACCEL
          *fmt++ = AV_PIX_FMT_VAAPI;
  #endif
-@@ -665,6 +672,13 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+@@ -652,6 +659,13 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
          break;
      case AV_PIX_FMT_YUV422P:
      case AV_PIX_FMT_YUV422P10LE:
@@ -510,8 +510,8 @@ index d3e5e58cfc..d127523c8b 100644
  #if CONFIG_HEVC_VAAPI_HWACCEL
         *fmt++ = AV_PIX_FMT_VAAPI;
  #endif
-@@ -685,6 +699,13 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
-     /* NOTE: fallthrough */
+@@ -672,6 +686,13 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+         av_fallthrough;
      case AV_PIX_FMT_YUV420P12:
      case AV_PIX_FMT_YUV444P12:
 +#if CONFIG_HEVC_DXVA2_HWACCEL
@@ -524,7 +524,7 @@ index d3e5e58cfc..d127523c8b 100644
  #if CONFIG_HEVC_VAAPI_HWACCEL
         *fmt++ = AV_PIX_FMT_VAAPI;
  #endif
-@@ -699,6 +720,13 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
+@@ -686,6 +707,13 @@ static enum AVPixelFormat get_format(HEVCContext *s, const HEVCSPS *sps)
  #endif
          break;
      case AV_PIX_FMT_YUV422P12:
@@ -539,5 +539,5 @@ index d3e5e58cfc..d127523c8b 100644
         *fmt++ = AV_PIX_FMT_VAAPI;
  #endif
 -- 
-2.51.0.windows.1
+2.55.0
 
