@@ -20,6 +20,7 @@ jobs:
             openssl_build_tuple: x64 VC-WIN64A-masm
             ffmpeg_build_tuple: x64
             libplacebo_build_tuple: x64
+            vulkan_sdk_version: 1.4.357.0
 
           # Windows ARM64 Configuration
           - os: windows-11-vs2026-arm
@@ -30,10 +31,12 @@ jobs:
             openssl_build_tuple: arm64 VC-WIN64-ARM
             ffmpeg_build_tuple: arm64
             libplacebo_build_tuple: arm64
+            vulkan_sdk_version: 1.4.357.0
 
           # macOS Configuration
           - os: macos-26
             macos_min: '13.0'
+            vulkan_sdk_version: 1.4.357.1
 
     runs-on: ${{ matrix.os }}
 
@@ -81,7 +84,7 @@ jobs:
       - name: Install Vulkan SDK
         uses: cgutman/install-vulkan-sdk@warm_qt
         with:
-          version: 1.4.350.0
+          version: ${{ matrix.vulkan_sdk_version }}
           cache: true
 
       - name: Setup Build Directory
