@@ -59,7 +59,7 @@ jobs:
         shell: cmd
         run: |
           choco install -y nasm jom
-          pip install meson ninja
+          pip install "meson<1.12.0" ninja
 
       - name: Setup MSVC (Windows)
         if: runner.os == 'Windows'
